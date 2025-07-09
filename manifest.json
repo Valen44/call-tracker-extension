@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Call Tracker",
+  "version": "1.0",
+  "description": "Track your agent calls and earnings",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://agent.lsaweb.com/*", "http://127.0.0.1:5500/InterpreCloud.html"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://agent.lsaweb.com/agent", "http://127.0.0.1:5500/InterpreCloud.html"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Call Tracker"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dashboard.html", "dashboard.js", "dashboard.css"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
