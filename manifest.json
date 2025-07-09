@@ -16,23 +16,23 @@
   "content_scripts": [
     {
       "matches": ["https://agent.lsaweb.com/agent", "http://127.0.0.1:5500/InterpreCloud.html"],
-      "js": ["content.js"],
+      "js": ["./content/content.js"],
       "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "./popup/popup.html",
     "default_title": "Call Tracker"
   },
   "web_accessible_resources": [
     {
-      "resources": ["dashboard.html", "dashboard.js", "dashboard.css"],
+      "resources": ["./dashboard/dashboard.html", "./dashboard/dashboard.js", "./dashboard/dashboard.css"],
       "matches": ["<all_urls>"]
     }
   ],
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "./resources/icon16.png",
+    "48": "./resources/icon48.png",
+    "128": "./resources/icon128.png"
   }
 }
