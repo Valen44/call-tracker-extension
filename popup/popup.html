@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css">
+    <title>CallTracker</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1>📞 Call Tracker</h1>
+    </div>
+
+    <div id="currentStatus" class="current-status status-available">
+      Status: Available
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number" id="totalCalls">0</div>
+        <div class="stat-label">Calls Today</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="totalEarnings">$0.00</div>
+        <div class="stat-label">Earned Today</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="totalTime">0m</div>
+        <div class="stat-label">Total Time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="avgHourlyRate">$0.00</div>
+        <div class="stat-label">Avg Hourly Rate</div>
+      </div>
+    </div>
+
+    <div class="calls-container">
+      <div class="calls-header">Today's Calls</div>
+      <div id="callsList">
+        <div class="loading">Loading calls...</div>
+      </div>
+    </div>
+
+    <div class="clear-data">
+      <button class="clear-btn" id="clearDataBtn">Clear All Data</button>
+      <button class="dashboard-btn" id="dashboardBtn">📊 Open Dashboard</button>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
