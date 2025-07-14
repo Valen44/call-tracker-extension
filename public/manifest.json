@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "version": "1.0.0",
+  "name": "LSA CALL TRACKER",
+  "action": {
+    "default_popup": "./src/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "./assets/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://agent.lsaweb.com/agent",
+        "https://valen44.github.io/*"
+      ],
+      "js": ["./assets/content/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "./dashboard/dashboard.html",
+        "./dashboard/dashboard.js",
+        "./dashboard/dashboard.css"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "permissions": ["scripting", "activeTab", "storage"]
+}

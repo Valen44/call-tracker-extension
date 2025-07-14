@@ -20,7 +20,7 @@ class CallTrackerDashboard {
     try {
       const result = await chrome.storage.local.get(["calls"]);
       const calls = result.calls || {};
-      this.allCalls = Object.values(calls).filter((call) => call.endTime); // Only completed calls
+      this.allCalls = Object.values(calls).filter((call) => call.startTime); // Only completed calls
       this.calculateDailyEarnings();
     } catch (error) {
       console.error("Error loading calls:", error);
