@@ -28,5 +28,10 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "permissions": ["scripting", "activeTab", "storage"]
+  "permissions": ["scripting", "activeTab", "storage"],
+  "icons": {
+    "16": "call-log16.png",
+    "48": "call-log16.png",
+    "128": "call-log128.png"
+  }
 }
