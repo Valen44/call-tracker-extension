@@ -1,7 +1,7 @@
 const HTML = `
     <div id="tracker" class="tracker">
         <header id="tracker-header" class="tracker-header">
-        <h1>LSA CALL TRACKER</h1>
+        <span class="h1">LSA CALL TRACKER</span>
         <div id="tracker-timer" class="tracker-timer"></div>
         </header>
         <main class="tracker-body">
