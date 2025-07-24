@@ -1,0 +1,11 @@
+## Call Managment
+[] Edit calls
+[] Modal for when deleting/editing calls
+[x] Reload table after deleting
+[] Change the way available is tracked
+
+# UI
+[] Theme depending extension icon
+[] Saving theme config
+[] Update inject stats style
+

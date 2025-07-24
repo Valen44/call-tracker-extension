@@ -1,0 +1,15 @@
+@import "../index.css";
+
+.quick-filter-btn {
+  @apply border hover:bg-input/60 dark:bg-input/30 dark:border-input focus:bg-accent-foreground focus:text-accent;
+}
+
+.stat {
+  @apply flex flex-col items-center text-center gap-1;
+}
+.stat-value {
+  @apply text-xl font-semibold leading-tight;
+}
+.stat-label {
+  @apply text-muted-foreground text-xs leading-tight;
+}
