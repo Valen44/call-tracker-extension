@@ -1,0 +1,87 @@
+import type { ColumnDef } from "@tanstack/react-table";
+
+import dateService from "@/services/dateService";
+
+import { type Call } from "@/types/Call";
+
+import { ActionsDropDown } from "./ActionsDropDown";
+
+import { DataTableColumnHeader } from "./DataTableColumnHeader";
+
+
+export const columns: ColumnDef<Call>[] = [
+  {
+    accessorKey: "date",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Date" className="pl-4"/> ),
+    cell: ({ row }) => {
+      const date = row.getValue("startTime") as string;
+      const formatted = dateService.formatDate(date);
+      return <div className="pl-4">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "startTime",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Start Time"/> ),
+    cell: ({ row }) => {
+      const time = row.getValue("startTime") as string;
+      const formatted = dateService.formatTime(time);
+      return <div>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "endTime",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="End Time"/> ),
+    cell: ({ row }) => {
+      const time = row.getValue("endTime") as string | undefined;
+      const formatted = time ? dateService.formatTime(time) : "";
+      return <div>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "duration",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Duration"/> ),
+    cell: ({ row }) => {
+      const duration = row.getValue("duration") as number;
+      const formatted = duration ? dateService.formatDuration(duration) : "";
+      return <div>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "available",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Available"/> ),
+    cell: ({ row }) => {
+      const available = row.getValue("available") as number;
+      const formatted = available ? dateService.formatDuration(available) : "";
+      return <div>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "earnings",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Earnings"/> ),
+    cell: ({ row }) => {
+      const earnings = parseFloat(row.getValue("earnings"));
+      const formatted = !Number.isNaN(earnings)
+        ? new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+          }).format(earnings)
+        : "";
+
+      const status = row.original.status;
+      if (status === "notServiced")
+        return <div className="text-destructive font-medium">N-S</div>;
+      else return <div className="font-medium">{formatted}</div>;
+    },
+  },
+  {
+    id: "actions",
+    header: () => { return <div className=""></div>},
+    cell: ({ row }) => {
+      const callID = row.original.id;
+
+      return (
+        <ActionsDropDown callID={callID}/>
+      );
+    },
+  },
+];
