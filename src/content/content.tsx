@@ -1,13 +1,14 @@
 import callService from "@/services/callService";
 import { type Call } from "@/types/Call";
 import statsDisplay from "./statsDisplay";
+
 type IntervalID = NodeJS.Timeout | null;
+
 class CallTracker {
   private currentCallData: Call | null = null;
   private availableStartTime: Date | null = null;
   private isOnCall: boolean = false;
   private lastStatus: "On-Call" | "Available" | null = null;
-  
 
   // Stats Display
   private displayIntervalID: {avail: IntervalID, call: IntervalID} = {avail: null, call: null}
@@ -18,30 +19,10 @@ class CallTracker {
   }
 
   private init(): void {
-    this.resolveNotFinishedCalls();
+    callService.resolveNotFinishedCalls();
     this.startMonitoring();
     this.injectStats();
     console.info("Call Tracker initialized");
-  }
-
-  private async resolveNotFinishedCalls() {
-    const calls = await callService.getAllCalls();
-
-    const filteredCalls = calls.filter((call) => call.status === "onGoing");
-
-    filteredCalls.map((call) => {
-       if (call.endTime === undefined) {
-        call.endTime = call.startTime;
-        call.duration = 0;
-      }
-
-      if (call.duration !== undefined && call.duration < 120) {
-        call.earnings = 0;
-        call.status = "notServiced";
-      } else call.status = "serviced";
-
-      callService.saveCall(call);
-    });
   }
 
   private calculateDuration(callData: Call): {duration: number, minutes: number, endTime: Date} {
@@ -120,7 +101,6 @@ class CallTracker {
 
     }
   }
-
 
   private checkCallStatus(): void {
     const statusElement = document.getElementById(

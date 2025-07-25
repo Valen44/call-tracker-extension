@@ -114,6 +114,26 @@ const calculateDayEarnings = (calls: Call[]) : DayEarnings   => {
     return dayEarnings
 }
 
+const resolveNotFinishedCalls = async () => {
+    const calls = await getAllCalls();
+
+    const filteredCalls = calls.filter((call) => call.status === "onGoing");
+
+    filteredCalls.map((call) => {
+       if (call.endTime === undefined) {
+        call.endTime = call.startTime;
+        call.duration = 0;
+      }
+
+      if (call.duration !== undefined && call.duration < 120) {
+        call.earnings = 0;
+        call.status = "notServiced";
+      } else call.status = "serviced";
+
+      saveCall(call);
+    });
+  }
+
 export default {
     getAllCalls,
     calculateStats,
@@ -121,5 +141,6 @@ export default {
     getCall,
     filterCalls,
     calculateDayEarnings,
-    deleteCall
+    deleteCall,
+    resolveNotFinishedCalls
 }

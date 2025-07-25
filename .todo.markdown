@@ -2,7 +2,7 @@
 [] Edit calls
 [] Modal for when deleting/editing calls
 [x] Reload table after deleting
-[] Change the way available is tracked
+[x] Change the way available is tracked
 
 # UI
 [] Theme depending extension icon
