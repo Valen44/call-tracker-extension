@@ -1,25 +1,47 @@
 import callService from "@/services/callService";
 import { type Call } from "@/types/Call";
 import statsDisplay from "./statsDisplay";
-
+type IntervalID = NodeJS.Timeout | null;
 class CallTracker {
-  private currentCallId: string | null = null;
+  private currentCallData: Call | null = null;
   private availableStartTime: Date | null = null;
   private isOnCall: boolean = false;
   private lastStatus: "On-Call" | "Available" | null = null;
+  
 
   // Stats Display
-  private availIntervalID: NodeJS.Timeout | null = null;
-  private callIntervalID: NodeJS.Timeout | null = null;
+  private displayIntervalID: {avail: IntervalID, call: IntervalID} = {avail: null, call: null}
+  private callSaverIntervalID: IntervalID = null;
 
   constructor() {
     this.init();
   }
 
   private init(): void {
+    this.resolveNotFinishedCalls();
     this.startMonitoring();
     this.injectStats();
     console.info("Call Tracker initialized");
+  }
+
+  private async resolveNotFinishedCalls() {
+    const calls = await callService.getAllCalls();
+
+    const filteredCalls = calls.filter((call) => call.status === "onGoing");
+
+    filteredCalls.map((call) => {
+       if (call.endTime === undefined) {
+        call.endTime = call.startTime;
+        call.duration = 0;
+      }
+
+      if (call.duration !== undefined && call.duration < 120) {
+        call.earnings = 0;
+        call.status = "notServiced";
+      } else call.status = "serviced";
+
+      callService.saveCall(call);
+    });
   }
 
   private calculateDuration(callData: Call): {duration: number, minutes: number, endTime: Date} {
@@ -58,6 +80,48 @@ class CallTracker {
     }, 500);
   }
 
+  private startTimer(type: "available" | "call") {
+    const startTime = Date.now();
+    
+    const intervalID = setInterval(() => statsDisplay.updateTimer(startTime), 1000);
+
+    if (type === "call") {
+      this.displayIntervalID.call = intervalID;
+      this.callSaverIntervalID = setInterval(() => this.saveCallState(), 60000);
+    }
+    else this.displayIntervalID.avail = intervalID;
+  }
+
+  private stopTimer(type: "available" | "call") {
+    statsDisplay.stopTimer();
+    if (type === "call" && this.displayIntervalID.call && this.callSaverIntervalID) {
+      clearInterval(this.displayIntervalID.call);
+      this.displayIntervalID.call = null;
+      clearInterval(this.callSaverIntervalID);
+      this.callSaverIntervalID = null;
+    }
+    else if (type === "available" && this.displayIntervalID.avail) {
+      clearInterval(this.displayIntervalID.avail);
+      this.displayIntervalID.avail = null;
+    }
+  }
+
+  private saveCallState() {
+    if (this.currentCallData) {
+      const { duration, minutes, endTime } = this.calculateDuration(this.currentCallData);;
+      const earnings = parseFloat((minutes * 0.15).toFixed(2));
+      this.currentCallData.duration = duration;
+      this.currentCallData.endTime = endTime.toISOString();
+      this.currentCallData.earnings = earnings;
+
+      callService.saveCall(this.currentCallData);
+      console.log("Call Saved");
+      console.log(this.currentCallData);
+
+    }
+  }
+
+
   private checkCallStatus(): void {
     const statusElement = document.getElementById(
       "span-agentstatus-text"
@@ -73,11 +137,11 @@ class CallTracker {
 
     if (currentStatus === "Available" && this.lastStatus !== "Available") {
       this.availableStartTime = new Date();
-      this.availIntervalID = statsDisplay.startTimer();
+      this.startTimer("available");
     }
     else if (currentStatus !== "Available" && this.lastStatus === "Available" && currentStatus !== "On-Call") {
       this.availableStartTime = null;
-      if (this.availIntervalID !== null) statsDisplay.stopTimer(this.availIntervalID);
+      if (this.displayIntervalID.avail !== null) this.stopTimer("available");
     }
 
     this.lastStatus = currentStatus;
@@ -100,60 +164,59 @@ class CallTracker {
 
   private startCall(): void {
     this.isOnCall = true;
-    this.currentCallId = Date.now().toString();
+    const callId = Date.now().toString();
 
-    const currentDate = new Date();
+    const startTime = new Date();
 
     const callData: Call = {
-      id: this.currentCallId,
-      startTime: currentDate.toISOString(),
+      id: callId,
+      startTime: startTime.toISOString(),
       endTime: undefined,
       duration: 0,
       earnings: undefined,
       status: "onGoing",
-      available: this.calculateAvailable(currentDate),
+      available: this.calculateAvailable(startTime),
     };
 
     callService.saveCall(callData);
-    console.info("Call started:");
-    console.table(callData);
+    this.currentCallData = callData;
 
     statsDisplay.setOnCall(true);
-    if (this.availIntervalID !== null) {
-      statsDisplay.stopTimer(this.availIntervalID);
-      this.availIntervalID = null;
 
-      this.callIntervalID = statsDisplay.startTimer();
-    }
+    this.stopTimer("available");
+    this.displayIntervalID.avail = null;
+
+    this.startTimer("call");
+    
+
+    console.info("Call started:");
+    console.table(callData);
   }
 
   private async endCall(): Promise<void> {
-    if (!this.isOnCall || !this.currentCallId) return;
-
-    const callData = await callService.getCall(this.currentCallId);
-      if (!callData) return;
-    
-    const {duration, minutes, endTime} = this.calculateDuration(callData);
-    callData.endTime = endTime.toISOString();
-    callData.duration = duration;
+    if (!this.isOnCall || !this.currentCallData) return;
+ 
+    const {duration, minutes, endTime} = this.calculateDuration(this.currentCallData);
+    this.currentCallData.endTime = endTime.toISOString();
+    this.currentCallData.duration = duration;
 
     const {status, earnings} = this.calculateEarnings(duration, minutes);
-    callData.status = status;
-    callData.earnings = earnings;
+    this.currentCallData.status = status;
+    this.currentCallData.earnings = earnings;
 
-    await callService.saveCall(callData)
+    await callService.saveCall(this.currentCallData)
     statsDisplay.updateStats();
 
-    if (this.callIntervalID !== null) {
-      statsDisplay.stopTimer(this.callIntervalID);
+    if (this.displayIntervalID.call !== null) {
+      this.stopTimer("call");
     }
     statsDisplay.setOnCall(false);
 
-    this.currentCallId = null;
-    this.isOnCall = false;
-
     console.info("Call ended:");
-    console.table(callData); 
+    console.table(this.currentCallData); 
+
+    this.currentCallData = null;
+    this.isOnCall = false;
   }
 
   private injectStats() {

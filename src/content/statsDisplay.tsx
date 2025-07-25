@@ -67,27 +67,18 @@ const updateStats = async () => {
 
 }
 
-const startTimer = () => {
-    const startTime = Date.now();
+const updateTimer = (startTime: number) => {
     const timerElement = document.getElementById("tracker-timer");
-
-    const updateTimer = () => {
-        const ms = Date.now() - startTime;
-        const totalSeconds = Math.floor(ms / 1000);
-        const timerStr = dateService.formatDuration(totalSeconds);
-        if (timerElement) timerElement.textContent = timerStr;
-        
-    }
-
-    const intervalID = setInterval(() => updateTimer(), 1000)
-
-    return intervalID
+    const ms = Date.now() - startTime;
+    const totalSeconds = Math.floor(ms / 1000);
+    const timerStr = dateService.formatDuration(totalSeconds);
+    if (timerElement) timerElement.textContent = timerStr;
+    
 }
 
-const stopTimer = (intervalID: NodeJS.Timeout) => {
-    const timerElement = document.getElementById("tracker-timer");
 
-    clearInterval(intervalID);
+const stopTimer = () => {
+    const timerElement = document.getElementById("tracker-timer");
     if (timerElement) timerElement.textContent = "";
 }
 
@@ -97,4 +88,4 @@ const setOnCall = (isOnCall: boolean) => {
     isOnCall ? headerEl?.classList.add("onCall") : headerEl?.classList.remove("onCall")
 }
 
-export default { createStatsDisplay, updateStats, startTimer, stopTimer, setOnCall }
+export default { createStatsDisplay, updateStats, stopTimer, setOnCall, updateTimer }

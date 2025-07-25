@@ -32,8 +32,9 @@ export const columns: ColumnDef<Call>[] = [
     accessorKey: "endTime",
     header: ({column}) => ( <DataTableColumnHeader column={column} title="End Time"/> ),
     cell: ({ row }) => {
+      const status = row.original.status;
       const time = row.getValue("endTime") as string | undefined;
-      const formatted = time ? dateService.formatTime(time) : "";
+      const formatted = time && status !== "onGoing" ? dateService.formatTime(time) : "";
       return <div>{formatted}</div>;
     },
   },
@@ -41,8 +42,9 @@ export const columns: ColumnDef<Call>[] = [
     accessorKey: "duration",
     header: ({column}) => ( <DataTableColumnHeader column={column} title="Duration"/> ),
     cell: ({ row }) => {
+      const status = row.original.status;
       const duration = row.getValue("duration") as number;
-      const formatted = duration ? dateService.formatDuration(duration) : "";
+      const formatted = duration && status !== "onGoing" ? dateService.formatDuration(duration) : "";
       return <div>{formatted}</div>;
     },
   },
@@ -59,15 +61,15 @@ export const columns: ColumnDef<Call>[] = [
     accessorKey: "earnings",
     header: ({column}) => ( <DataTableColumnHeader column={column} title="Earnings"/> ),
     cell: ({ row }) => {
+      const status = row.original.status;
       const earnings = parseFloat(row.getValue("earnings"));
-      const formatted = !Number.isNaN(earnings)
+      const formatted = !Number.isNaN(earnings) && status !== "onGoing"
         ? new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
           }).format(earnings)
         : "";
-
-      const status = row.original.status;
+      
       if (status === "notServiced")
         return <div className="text-destructive font-medium">N-S</div>;
       else return <div className="font-medium">{formatted}</div>;
