@@ -5,7 +5,6 @@
 [x] Change the way available is tracked
 
 # UI
-[] Theme depending extension icon
-[] Saving theme config
+[x] Theme depending extension icon
 [] Update inject stats style
 
