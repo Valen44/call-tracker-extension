@@ -30,7 +30,7 @@ const HTML = `
 `;
 
 const CSS = `
-* {
+#tracker * {
   font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   margin: 0px;
   box-sizing: border-box;
