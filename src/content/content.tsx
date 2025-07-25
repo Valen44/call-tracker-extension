@@ -4,12 +4,13 @@ import statsDisplay from "./statsDisplay";
 
 class CallTracker {
   private currentCallId: string | null = null;
-  private prevCallEndTime: string | null = null;
+  private availableStartTime: Date | null = null;
   private isOnCall: boolean = false;
   private lastStatus: "On-Call" | "Available" | null = null;
 
   // Stats Display
-  private intervalID: NodeJS.Timeout | null = null;
+  private availIntervalID: NodeJS.Timeout | null = null;
+  private callIntervalID: NodeJS.Timeout | null = null;
 
   constructor() {
     this.init();
@@ -19,6 +20,36 @@ class CallTracker {
     this.startMonitoring();
     this.injectStats();
     console.info("Call Tracker initialized");
+  }
+
+  private calculateDuration(callData: Call): {duration: number, minutes: number, endTime: Date} {
+    const endTime = new Date();
+    const startTime = new Date(callData.startTime);
+
+    // Duration in seconds
+    const duration = Math.floor(
+      (endTime.getTime() - startTime.getTime()) / 1000); 
+
+    // Calculate minutes and round to 30s
+    let minutes = Math.floor(duration / 60);
+    if (duration % 60 >= 30) minutes += 1;
+
+    return {duration, minutes, endTime}
+  }
+
+  private calculateEarnings(duration:number, minutes: number): {status: Call["status"], earnings: number } {
+    let status: Call["status"];
+    let earnings: number;
+
+    if (duration <= 123 && !confirm("Was the call serviced?")) {
+      status = "notServiced";
+      earnings = 0;
+    } else {
+      status = "serviced";
+      earnings = parseFloat((minutes * 0.15).toFixed(2));
+    }
+
+    return {status, earnings};
   }
 
   private startMonitoring(): void {
@@ -39,6 +70,16 @@ class CallTracker {
       | null;
     if (currentStatus === this.lastStatus) return;
 
+
+    if (currentStatus === "Available" && this.lastStatus !== "Available") {
+      this.availableStartTime = new Date();
+      this.availIntervalID = statsDisplay.startTimer();
+    }
+    else if (currentStatus !== "Available" && this.lastStatus === "Available" && currentStatus !== "On-Call") {
+      this.availableStartTime = null;
+      if (this.availIntervalID !== null) statsDisplay.stopTimer(this.availIntervalID);
+    }
+
     this.lastStatus = currentStatus;
 
     if (currentStatus === "On-Call" && !this.isOnCall) {
@@ -49,10 +90,9 @@ class CallTracker {
   }
 
   private calculateAvailable(startTime: Date): number | undefined {
-    if (this.prevCallEndTime) {
-      const prevEndTime = new Date(this.prevCallEndTime);
+    if (this.availableStartTime) {
       const available = Math.floor(
-        (startTime.getTime() - prevEndTime.getTime()) / 1000
+        (startTime.getTime() - this.availableStartTime.getTime()) / 1000
       );
       return available;
     }
@@ -79,59 +119,41 @@ class CallTracker {
     console.table(callData);
 
     statsDisplay.setOnCall(true);
-        if (this.intervalID !== null) {
-        statsDisplay.stopTimer(this.intervalID);
-        }
-        this.intervalID = statsDisplay.startTimer();
+    if (this.availIntervalID !== null) {
+      statsDisplay.stopTimer(this.availIntervalID);
+      this.availIntervalID = null;
+
+      this.callIntervalID = statsDisplay.startTimer();
+    }
   }
 
-  private endCall(): void {
+  private async endCall(): Promise<void> {
     if (!this.isOnCall || !this.currentCallId) return;
 
-    this.isOnCall = false;
-
-    callService.getCall(this.currentCallId).then((callData: Call | null) => {
+    const callData = await callService.getCall(this.currentCallId);
       if (!callData) return;
+    
+    const {duration, minutes, endTime} = this.calculateDuration(callData);
+    callData.endTime = endTime.toISOString();
+    callData.duration = duration;
 
-      const endTime = new Date();
-      const startTime = new Date(callData.startTime);
-      const duration = Math.floor(
-        (endTime.getTime() - startTime.getTime()) / 1000
-      ); // Duration in seconds
+    const {status, earnings} = this.calculateEarnings(duration, minutes);
+    callData.status = status;
+    callData.earnings = earnings;
 
-      // Calculate minutes and round to 30s
-      let minutes = Math.floor(duration / 60);
-      if (duration % 60 >= 30) minutes += 1;
+    await callService.saveCall(callData)
+    statsDisplay.updateStats();
 
-      
-      if (duration <= 123 && !confirm("Was the call serviced?")) {
-        callData.status = "notServiced";
-        callData.earnings = 0;
-      } else {
-        callData.status = "serviced";
-        const earnings = minutes * 0.15;
-        callData.earnings = parseFloat(earnings.toFixed(2));
-      }
-
-      callData.endTime = endTime.toISOString();
-      callData.duration = duration;
-
-      this.prevCallEndTime = endTime.toISOString();
-
-      callService.saveCall(callData).then(() => {
-        statsDisplay.updateStats();
-
-        if (this.intervalID !== null) {
-          statsDisplay.stopTimer(this.intervalID);
-        }
-        this.intervalID = statsDisplay.startTimer();
-        statsDisplay.setOnCall(false);
-        console.info("Call ended:");
-        console.table(callData);
-      });
-    });
+    if (this.callIntervalID !== null) {
+      statsDisplay.stopTimer(this.callIntervalID);
+    }
+    statsDisplay.setOnCall(false);
 
     this.currentCallId = null;
+    this.isOnCall = false;
+
+    console.info("Call ended:");
+    console.table(callData); 
   }
 
   private injectStats() {

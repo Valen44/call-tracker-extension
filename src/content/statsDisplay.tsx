@@ -69,7 +69,7 @@ const updateStats = async () => {
 
 const startTimer = () => {
     const startTime = Date.now();
-    const timerElement = document.getElementById("tracker-timer")
+    const timerElement = document.getElementById("tracker-timer");
 
     const updateTimer = () => {
         const ms = Date.now() - startTime;
@@ -85,7 +85,10 @@ const startTimer = () => {
 }
 
 const stopTimer = (intervalID: NodeJS.Timeout) => {
+    const timerElement = document.getElementById("tracker-timer");
+
     clearInterval(intervalID);
+    if (timerElement) timerElement.textContent = "";
 }
 
 const setOnCall = (isOnCall: boolean) => {
