@@ -3,10 +3,17 @@
 [] Modal for when deleting/editing calls
 [x] Reload table after deleting
 [x] Change the way available is tracked
+
+
+# Settings
 [] Add option to put rate $$
+[] Call sorting in dashboard
+[] Theme selector
 
 # UI
 [x] Theme depending extension icon
 [x] Update inject stats style
     [] Add light theme mode
+    [] Add auto style depending on theme
+
 
