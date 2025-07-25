@@ -1,7 +1,7 @@
 import { columns } from '../components/call-table/columns';
 import { DataTable } from '../components/call-table/data-table';
 import { type Call } from "@/types/Call"
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import dateService from "@/services/dateService";
 import callService from "@/services/callService";
 

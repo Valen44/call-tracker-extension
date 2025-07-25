@@ -3,8 +3,10 @@
 [] Modal for when deleting/editing calls
 [x] Reload table after deleting
 [x] Change the way available is tracked
+[] Add option to put rate $$
 
 # UI
 [x] Theme depending extension icon
-[] Update inject stats style
+[x] Update inject stats style
+    [] Add light theme mode
 

@@ -3,12 +3,13 @@ import { type Call } from "@/types/Call";
 import statsDisplay from "./statsDisplay";
 
 type IntervalID = NodeJS.Timeout | null;
+type Status = "On-Call" | "Available" | "Attempted" | "Wrap-Up" | null;
 
 class CallTracker {
   private currentCallData: Call | null = null;
   private availableStartTime: Date | null = null;
   private isOnCall: boolean = false;
-  private lastStatus: "On-Call" | "Available" | null = null;
+  private lastStatus: Status = null;
 
   // Stats Display
   private displayIntervalID: {avail: IntervalID, call: IntervalID} = {avail: null, call: null}
@@ -108,20 +109,19 @@ class CallTracker {
     ) as HTMLElement | null;
     if (!statusElement) return;
 
-    const currentStatus = (statusElement.textContent?.trim() || null) as
-      | "On-Call"
-      | "Available"
-      | null;
+    const currentStatus = (statusElement.textContent?.trim() || null) as Status;
     if (currentStatus === this.lastStatus) return;
 
 
     if (currentStatus === "Available" && this.lastStatus !== "Available") {
       this.availableStartTime = new Date();
       this.startTimer("available");
+      statsDisplay.setStatus("available");
     }
-    else if (currentStatus !== "Available" && this.lastStatus === "Available" && currentStatus !== "On-Call") {
+    else if (currentStatus !== "Available" && this.lastStatus === "Available" && currentStatus !== "On-Call" && currentStatus !== "Attempted") {
       this.availableStartTime = null;
       if (this.displayIntervalID.avail !== null) this.stopTimer("available");
+      statsDisplay.setStatus("unavailable");
     }
 
     this.lastStatus = currentStatus;
@@ -161,7 +161,7 @@ class CallTracker {
     callService.saveCall(callData);
     this.currentCallData = callData;
 
-    statsDisplay.setOnCall(true);
+    statsDisplay.setStatus("oncall");
 
     this.stopTimer("available");
     this.displayIntervalID.avail = null;
@@ -190,7 +190,7 @@ class CallTracker {
     if (this.displayIntervalID.call !== null) {
       this.stopTimer("call");
     }
-    statsDisplay.setOnCall(false);
+    statsDisplay.setStatus("unavailable");
 
     console.info("Call ended:");
     console.table(this.currentCallData); 
