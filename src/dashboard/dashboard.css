@@ -4,6 +4,10 @@
   @apply border hover:bg-input/60 dark:bg-input/30 dark:border-input focus:bg-accent-foreground focus:text-accent;
 }
 
+.settings-btn {
+  @apply border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 ;
+}
+
 .stat {
   @apply flex flex-col items-center text-center gap-1;
 }
@@ -12,4 +16,17 @@
 }
 .stat-label {
   @apply text-muted-foreground text-xs leading-tight;
+}
+
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
 }

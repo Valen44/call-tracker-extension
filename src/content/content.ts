@@ -1,6 +1,7 @@
 import callService from "@/services/callService";
 import { type Call } from "@/types/Call";
 import statsDisplay from "./statsDisplay";
+import settingsService, {defaultSettings} from "@/services/settingsService";
 
 type IntervalID = NodeJS.Timeout | null;
 type Status = "On-Call" | "Available" | "Attempted" | "Wrap-Up" | null;
@@ -10,6 +11,7 @@ class CallTracker {
   private availableStartTime: Date | null = null;
   private isOnCall: boolean = false;
   private lastStatus: Status = null;
+  private RATE: number = defaultSettings.rate;
 
   // Stats Display
   private displayIntervalID: {avail: IntervalID, call: IntervalID} = {avail: null, call: null}
@@ -19,11 +21,14 @@ class CallTracker {
     this.init();
   }
 
-  private init(): void {
+  private async init() {
+    this.RATE = (await settingsService.loadSettings()).rate
+
     callService.resolveNotFinishedCalls();
     this.startMonitoring();
     this.injectStats();
-    console.info("Call Tracker initialized");
+    
+    console.info("Call Tracker initialized with RATE:", this.RATE);
   }
 
   private calculateDuration(callData: Call): {duration: number, minutes: number, endTime: Date} {
@@ -50,7 +55,7 @@ class CallTracker {
       earnings = 0;
     } else {
       status = "serviced";
-      earnings = parseFloat((minutes * 0.15).toFixed(2));
+      earnings = parseFloat((minutes * this.RATE).toFixed(2));
     }
 
     return {status, earnings};
@@ -91,7 +96,7 @@ class CallTracker {
   private saveCallState() {
     if (this.currentCallData) {
       const { duration, minutes, endTime } = this.calculateDuration(this.currentCallData);;
-      const earnings = parseFloat((minutes * 0.15).toFixed(2));
+      const earnings = parseFloat((minutes * this.RATE).toFixed(2));
       this.currentCallData.duration = duration;
       this.currentCallData.endTime = endTime.toISOString();
       this.currentCallData.earnings = earnings;

@@ -6,14 +6,13 @@
 
 
 # Settings
-[] Add option to put rate $$
-[] Call sorting in dashboard
-[] Theme selector
+[] Fix values persistent when closing
+[X] Add option to put rate $$
+[X] Call sorting in dashboard
+[X] Theme selector
 
 # UI
 [x] Theme depending extension icon
 [x] Update inject stats style
-    [] Add light theme mode
-    [] Add auto style depending on theme
 
 

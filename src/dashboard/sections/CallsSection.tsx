@@ -12,7 +12,7 @@ export const CallsSection = ({calls} : {calls: Call[]}) => {
   const stats = callService.calculateStats(calls);
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 w-full">
         <div>
           <Card className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 p-6  mb-3">
                   <div className="stat">

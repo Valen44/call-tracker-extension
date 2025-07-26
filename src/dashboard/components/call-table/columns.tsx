@@ -21,7 +21,7 @@ export const columns: ColumnDef<Call>[] = [
   },
   {
     accessorKey: "startTime",
-    header: ({column}) => ( <DataTableColumnHeader column={column} title="Start Time"/> ),
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Start Time" /> ),
     cell: ({ row }) => {
       const time = row.getValue("startTime") as string;
       const formatted = dateService.formatTime(time);

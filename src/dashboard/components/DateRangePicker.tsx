@@ -21,7 +21,7 @@ export type DateRangeRef = {
 
 export default function DateRangePicker({clearSignal} : {clearSignal : number}) {
 
-   const {sendFilter} = React.useContext(CallContext)
+   const {filterCalls} = React.useContext(CallContext)
 
   const [range, setRange] = React.useState<DateRange | undefined>(undefined)
 
@@ -34,7 +34,7 @@ export default function DateRangePicker({clearSignal} : {clearSignal : number}) 
         startDateStr: dateService.formatDate(range.from.toISOString()),
         endDateStr: dateService.formatDate(range.to.toISOString())
       };
-      sendFilter(filter);
+      filterCalls(filter);
     }
   }
 

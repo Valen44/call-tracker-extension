@@ -34,9 +34,6 @@ export const DeleteDialog = ({
         open={isDeleteDialog}
         onOpenChange={() => setIsDeleteDialog(!isDeleteDialog)}
       >
-        {/* <DialogTrigger>
-              <Button variant={"destructive"}>Delete</Button>
-            </DialogTrigger> */}
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Delete Call</DialogTitle>

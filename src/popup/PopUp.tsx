@@ -5,15 +5,14 @@ import { Separator } from "@/components/ui/separator";
 import { StatsCard } from "./sections/StatsCard";
 import { CallsCard } from "./sections/CallsCard";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, MoonStar, Sun } from "lucide-react";
+import { ExternalLink} from "lucide-react";
 
 import callService from "@/services/callService";
 import { type CallStats, type Call } from "@/types/Call";
-import { toggleMode, setModeFromBrowserPreference } from "@/services/browserTheme";
+import setThemeFromSettings from "@/services/themeService";
 
 export const PopUp = () => {
 
-  const [mode, setMode] = useState<"light" | "dark">(window.matchMedia('(prefers-color-scheme: dark)').matches? "dark" : "light")
   const [stats, setStats] = useState<CallStats>({
     totalCalls: 0,
     totalEarnings: 0.0,
@@ -39,7 +38,7 @@ export const PopUp = () => {
       setMonthEarnings(monthEarnings);
     })
 
-    setModeFromBrowserPreference()
+    setThemeFromSettings("popup")
   }, []);
 
   const [calls, setCalls] = useState<Call[]>([])
@@ -65,7 +64,6 @@ export const PopUp = () => {
 
       <div className="flex justify-center gap-2">
         <Button onClick={() => openDashboard()}><ExternalLink/> Dashboard</Button>
-        <Button onClick={() => toggleMode(mode, setMode)}>{mode === "dark" ? <Sun/> : <MoonStar/>}</Button>
       </div>
 
     </div>
