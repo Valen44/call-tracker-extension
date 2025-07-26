@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CallContext } from "./context/CallContext.tsx";
 
-import { type Call, callsMock } from "@/types/Call.tsx";
+import { type Call } from "@/types/Call.tsx";
 import { type filterCallsProps } from "@/services/callService.tsx";
 import { type DayEarnings } from "@/types/Call.tsx";
 import {

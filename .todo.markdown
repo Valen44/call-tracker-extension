@@ -1,6 +1,6 @@
 ## Call Managment
 [] Edit calls
-[] Modal for when deleting/editing calls
+[X] Modal for when deleting/editing calls
 [x] Reload table after deleting
 [x] Change the way available is tracked
 

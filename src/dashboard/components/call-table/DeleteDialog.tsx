@@ -14,6 +14,7 @@ import callService from "@/services/callService";
 
 import { useContext } from "react";
 import { CallContext } from "@/dashboard/context/CallContext";
+import { toast } from "sonner";
 
 
 export const DeleteDialog = ({
@@ -50,8 +51,14 @@ export const DeleteDialog = ({
             </DialogClose>
             <DialogClose asChild>
               <Button type="button" variant="destructive" onClick={() => {
-                callService.deleteCall(callID).then(() => reloadTable())
-                }}
+                try {
+                  callService.deleteCall(callID).then(() => reloadTable())
+                  toast.success("Call deleted successfully!")
+                } catch (error) {
+                  toast.error("Error while saving settings")
+                  console.error("Error while deleting call", error)
+                }
+              }}
               >
                 Delete
               </Button>

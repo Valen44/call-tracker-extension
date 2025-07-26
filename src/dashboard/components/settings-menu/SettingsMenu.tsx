@@ -22,6 +22,7 @@ import settingsService, {
 } from "@/services/settingsService";
 import setThemeFromSettings from "@/services/themeService";
 import { SortingSelectorButton } from "./SortingSelectorButton";
+import { toast } from "sonner";
 
 export const SettingsMenu = () => {
   const [dashboardTheme, setDashboardTheme] = useState<Appearence>(
@@ -55,6 +56,14 @@ export const SettingsMenu = () => {
     },
     callSorting: callSorting
   };
+
+  try {
+    await settingsService.saveSettings(settings);
+    toast.success("Settings saved!")
+  } catch (error) {
+    toast.error("Error while saving settings")
+    console.error("Error while saving settings", error)
+  }
 
   await settingsService.saveSettings(settings);
   await setThemeFromSettings("dashboard");
