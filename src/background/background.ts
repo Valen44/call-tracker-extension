@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener((message) => {
     path: {
       "16": `icons/${iconPrefix}16.png`,
       "32": `icons/${iconPrefix}32.png`,
-      "48": `icons/${iconPrefix}24.png`,
+      "48": `icons/${iconPrefix}48.png`,
       "128": `icons/${iconPrefix}128.png`
     }
   })

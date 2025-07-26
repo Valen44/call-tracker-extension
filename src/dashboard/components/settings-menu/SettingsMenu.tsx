@@ -10,7 +10,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Settings } from "lucide-react";
 
@@ -35,16 +34,17 @@ export const SettingsMenu = () => {
   const [callSorting, setCallSorting] = useState<"asc" | "desc">(
     defaultSettings.callSorting
   );
+  const [openSettings, setOpenSettings] = useState<boolean>(false);
 
 
   useEffect(() => {
-    settingsService.loadSettings().then((settings) => {
-      setDashboardTheme(settings.appearence.dashboard);
-      setPopupTheme(settings.appearence.popup);
-      setRate(settings.rate);
-      setCallSorting(settings.callSorting);
+      settingsService.loadSettings().then((settings) => {
+        setDashboardTheme(settings.appearence.dashboard);
+        setPopupTheme(settings.appearence.popup);
+        setRate(settings.rate);
+        setCallSorting(settings.callSorting);
     });
-  }, []);
+  }, [openSettings]);
 
   const handleSubmit = async () => {
   const settings: ExtensionSettings = {
@@ -62,12 +62,12 @@ export const SettingsMenu = () => {
 };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant={"outline"}>
-          <Settings />
-        </Button>
-      </SheetTrigger>
+    <>
+    <Button variant={"outline"} onClick={() => setOpenSettings(!openSettings)}>
+        <Settings />
+    </Button>
+
+    <Sheet open={openSettings} onOpenChange={() => setOpenSettings(!openSettings)}>
       <SheetContent className="p-3">
         <SheetHeader>
           <div className="flex items-center gap-2 justify-start">
@@ -120,5 +120,6 @@ export const SettingsMenu = () => {
         </SheetFooter>
       </SheetContent>
     </Sheet>
+    </>
   );
 };

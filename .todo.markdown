@@ -6,7 +6,7 @@
 
 
 # Settings
-[] Fix values persistent when closing
+[X] Fix values persistent when closing
 [X] Add option to put rate $$
 [X] Call sorting in dashboard
 [X] Theme selector
