@@ -4,6 +4,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Plus
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { CallDialog } from "../CallForm/CallDialog"
+import { useState } from "react"
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
@@ -22,9 +25,18 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
+
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
+
   return (
     <div className="flex items-center justify-end px-2">
       <div className="flex items-center space-x-6 lg:space-x-8">
+        
+        <Button type="button" variant={"outline"} onClick={() => setOpenCreateDialog(!openCreateDialog)}>
+          <Plus/> Call
+        </Button>
+        <CallDialog open={openCreateDialog} onOpenChange={setOpenCreateDialog} type="create" />
+
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +8,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { DeleteDialog } from "./DeleteDialog";
 import { MoreHorizontal } from "lucide-react";
+import { CallDialog } from '@/dashboard/components/CallForm/CallDialog';
+import type { Call } from '@/types/Call';
 
 
 
 
 
-export const ActionsDropDown = ({callID} : {callID : string}) => {
+export const ActionsDropDown = ({call} : {call : Call}) => {
 
-    const [isDeleteDialog, setIsDeleteDialog] = useState<boolean>(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+    const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
     
 
   return (
@@ -28,10 +31,15 @@ export const ActionsDropDown = ({callID} : {callID : string}) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setOpenEditDialog(!openEditDialog)}
+            >
+              Edit
+              </DropdownMenuItem>
+
             <DropdownMenuItem
               className="text-destructive"
-              onClick={() => setIsDeleteDialog(!isDeleteDialog)}
+              onClick={() => setOpenDeleteDialog(!openDeleteDialog)}
             >
               Delete
             </DropdownMenuItem>
@@ -39,7 +47,8 @@ export const ActionsDropDown = ({callID} : {callID : string}) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <DeleteDialog isDeleteDialog={isDeleteDialog} setIsDeleteDialog={setIsDeleteDialog} callID={callID} />
+        <DeleteDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog} callID={call.id} />
+        <CallDialog open={openEditDialog} onOpenChange={setOpenEditDialog} call={call} type="edit" />
     </div>
   )
 }

@@ -19,9 +19,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { Button } from "@/components/ui/button.tsx"
 import { DataTablePagination } from "./DataTablePagination";
 import React from "react";
+import settingsService from "@/services/settingsService";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -33,7 +33,35 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  React.useEffect(() => {
+    const loadSorting = () => {
+      settingsService.loadSettings().then((setting) => {
+        const sort = setting.callSorting === "desc";
+        setSorting([
+          {
+            id: "startTime",
+            desc: sort,
+          },
+        ]);
+      });
+    };
+
+    // Initial load
+    loadSorting();
+
+    // Listen for custom updates
+    const handleCustomUpdate = () => {
+      loadSorting();
+    };
+
+    window.addEventListener("settingsUpdated", handleCustomUpdate);
+
+    return () => {
+      window.removeEventListener("settingsUpdated", handleCustomUpdate);
+    };
+  }, []);
 
   const table = useReactTable({
     data,
@@ -45,6 +73,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
     },
+
   })
 
   return (
@@ -60,9 +89,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -94,7 +123,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table}/>
+      <DataTablePagination table={table} />
     </div>
   )
 }

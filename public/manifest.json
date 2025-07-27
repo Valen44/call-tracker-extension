@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "name": "CALL TRACKER",
   "action": {
-    "default_popup": "./src/popup/popup.html"
+    "default_popup": "./src/popup/popup.html",
+    "default_icon": {
+      "16": "./icons/dark-icon16.png",
+      "32": "./icons/dark-icon32.png",
+      "48": "./icons/dark-icon24.png",
+      "128": "./icons/dark-icon128.png"
+    }
   },
   "content_scripts": [
     {
@@ -12,11 +18,15 @@
         "https://valen44.github.io/*"
       ],
       "js": [
-        "./assets/content/assets/content.js"
+        "./assets/content.js",
+        "./assets/themeDetector.js"
       ],
       "run_at": "document_idle"
     }
   ],
+  "background": {
+    "service_worker": "./assets/background.js"
+  },
   "web_accessible_resources": [
     {
       "resources": [
@@ -35,9 +45,9 @@
     "storage"
   ],
   "icons": {
-    "16": "./icons/dark-logo16.png",
-    "32": "./icons/dark-logo32.png",
-    "48": "./icons/dark-logo48.png",
-    "128": "./icons/dark-logo128.png"
-  }
+      "16": "./icons/dark-icon16.png",
+      "32": "./icons/dark-icon32.png",
+      "48": "./icons/dark-icon24.png",
+      "128": "./icons/dark-icon128.png"
+    }
 }

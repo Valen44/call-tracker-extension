@@ -42,56 +42,63 @@ const createStatsDisplay = () => {
 
 const updateStats = async () => {
     const callsToday = await callService.filterCalls({ period: "today" });
-    const callsMonth = await callService.filterCalls({ period: "month" });
 
     const statsToday = callService.calculateStats(callsToday);
-    const statsMonth = callService.calculateStats(callsMonth);
 
-    const todayEarningsEl = document.getElementById('today-earnings');
-    const monthEarningsEl = document.getElementById('month-earnings');
     const totalCallsEl = document.getElementById('total-calls');
-    const hourlRateEl = document.getElementById('hourly-rate');
-
-    if (todayEarningsEl) {
-        todayEarningsEl.textContent = `$${statsToday.totalEarnings.toFixed(2)}`;
-    }
-    if (monthEarningsEl) {
-        monthEarningsEl.textContent = `$${statsMonth.totalEarnings.toFixed(2)}`;
-    }
+    const todayEarningsEl = document.getElementById('today-earnings');
+    const inCallTimeEl = document.getElementById('in-call-time');
+    const hourlyRateEl = document.getElementById('hourly-rate');
+    const avgAvailEl = document.getElementById('avg-avail');
+    
     if (totalCallsEl) {
         totalCallsEl.textContent = `${statsToday.totalCalls}`;
     }
-    if (hourlRateEl) {
-        hourlRateEl.textContent = `$${statsToday.avgHourlyRate.toFixed(2)}`;
+    if (todayEarningsEl) {
+        todayEarningsEl.textContent = `$${statsToday.totalEarnings.toFixed(2)}`;
+    }
+    if (inCallTimeEl) {
+        inCallTimeEl.textContent = `${dateService.formatDuration(statsToday.totalTime || 0)}`;
+    }
+    if (hourlyRateEl) {
+        hourlyRateEl.textContent = `$${statsToday.avgHourlyRate.toFixed(2)}`;
+    }
+    if (avgAvailEl) {
+        avgAvailEl.textContent = `${dateService.formatDuration(statsToday.avgAvailableTime || 0)}`;
     }
 
 }
 
-const startTimer = () => {
-    const startTime = Date.now();
-    const timerElement = document.getElementById("tracker-timer")
-
-    const updateTimer = () => {
-        const ms = Date.now() - startTime;
-        const totalSeconds = Math.floor(ms / 1000);
-        const timerStr = dateService.formatDuration(totalSeconds);
-        if (timerElement) timerElement.textContent = timerStr;
-        
-    }
-
-    const intervalID = setInterval(() => updateTimer(), 1000)
-
-    return intervalID
+const updateTimer = (startTime: number) => {
+    const timerElement = document.getElementById("tracker-timer");
+    const ms = Date.now() - startTime;
+    const totalSeconds = Math.floor(ms / 1000);
+    const timerStr = dateService.formatDuration(totalSeconds, true);
+    if (timerElement) timerElement.textContent = timerStr;
+    
 }
 
-const stopTimer = (intervalID: NodeJS.Timeout) => {
-    clearInterval(intervalID);
+
+const stopTimer = () => {
+    const timerElement = document.getElementById("tracker-timer");
+    if (timerElement) timerElement.textContent = "";
 }
 
-const setOnCall = (isOnCall: boolean) => {
+const setStatus = (status: "available" | "oncall" | "unavailable") => {
     const headerEl = document.getElementById("tracker-header")
-
-    isOnCall ? headerEl?.classList.add("onCall") : headerEl?.classList.remove("onCall")
+    if (headerEl === null) return;
+    
+    switch (status) {
+    case "available":
+      headerEl.className = "status-available";
+      break;
+    case "oncall":
+      headerEl.className = "status-oncall";
+      break;
+    case "unavailable":
+      headerEl.className = "status-unavailable";
+      break;
+  }
 }
 
-export default { createStatsDisplay, updateStats, startTimer, stopTimer, setOnCall }
+export default { createStatsDisplay, updateStats, stopTimer, setStatus, updateTimer }

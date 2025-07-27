@@ -11,6 +11,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         dashboard: resolve(__dirname, 'src/dashboard/dashboard.html'),
+        preloadTheme: resolve(__dirname, 'src/dashboard/preloadtheme.ts'),
       },
       output: {
         entryFileNames: 'assets/[name].js',

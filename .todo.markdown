@@ -1,11 +1,20 @@
 ## Call Managment
-[] Edit calls
-[] Modal for when deleting/editing calls
+[X] Edit calls
+[X] button to Create a call 
+[X] Fix stats and calendar not updating when deleting/editing calls
+[X] Modal for when deleting/editing calls
 [x] Reload table after deleting
-[] Change the way available is tracked
+[x] Change the way available is tracked
+
+
+# Settings
+[X] Fix values persistent when closing
+[X] Add option to put rate $$
+[X] Call sorting in dashboard
+[X] Theme selector
 
 # UI
-[] Theme depending extension icon
-[] Saving theme config
-[] Update inject stats style
+[x] Theme depending extension icon
+[x] Update inject stats style
+
 

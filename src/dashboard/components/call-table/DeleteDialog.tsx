@@ -14,15 +14,16 @@ import callService from "@/services/callService";
 
 import { useContext } from "react";
 import { CallContext } from "@/dashboard/context/CallContext";
+import { toast } from "sonner";
 
 
 export const DeleteDialog = ({
-  isDeleteDialog,
-  setIsDeleteDialog,
+  open,
+  onOpenChange,
   callID
 }: {
-  isDeleteDialog: boolean;
-  setIsDeleteDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   callID: string;
 }) => {
 
@@ -31,12 +32,9 @@ export const DeleteDialog = ({
   return (
     <>
       <Dialog
-        open={isDeleteDialog}
-        onOpenChange={() => setIsDeleteDialog(!isDeleteDialog)}
+        open={open}
+        onOpenChange={() => onOpenChange(!open)}
       >
-        {/* <DialogTrigger>
-              <Button variant={"destructive"}>Delete</Button>
-            </DialogTrigger> */}
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Delete Call</DialogTitle>
@@ -53,8 +51,14 @@ export const DeleteDialog = ({
             </DialogClose>
             <DialogClose asChild>
               <Button type="button" variant="destructive" onClick={() => {
-                callService.deleteCall(callID).then(() => reloadTable())
-                }}
+                try {
+                  callService.deleteCall(callID).then(() => reloadTable())
+                  toast.success("Call deleted successfully!")
+                } catch (error) {
+                  toast.error("Error while saving settings")
+                  console.error("Error while deleting call", error)
+                }
+              }}
               >
                 Delete
               </Button>

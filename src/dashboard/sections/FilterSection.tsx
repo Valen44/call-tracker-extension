@@ -1,21 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import DateRangePicker from "../components/DateRangePicker.tsx" ;
-import type { DateRangeRef } from "../components/DateRangePicker.tsx";
-import { useContext, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { type Period } from "@/services/callService";
 import { CallContext } from "../context/CallContext.tsx";
 
 
 export const FilterSection = () => {
-  const {sendFilter} = useContext(CallContext)
+  const {filterCalls} = useContext(CallContext)
 
   const [clearSignal, setClearSignal] = useState<number>(0);
 
 
   const quickFilter = (period: Period) => {
     const quickFilter = { period };
-    sendFilter(quickFilter);
+    filterCalls(quickFilter);
     resetFilter();
   };
 
