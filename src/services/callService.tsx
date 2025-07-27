@@ -58,7 +58,7 @@ export type filterCallsProps = {
 
 const filterCalls = async (filter : filterCallsProps): Promise<Call[]> => {
     const allCalls = await getAllCalls();
-    let {period, startDateStr, endDateStr} = filter;
+    const {period, startDateStr, endDateStr} = filter;
     let startDate: Date;
     let endDate: Date;
 
@@ -134,6 +134,17 @@ const resolveNotFinishedCalls = async () => {
     });
   }
 
+const calculateDuration = (startTime: Date, endTime: Date) => {
+    const duration = Math.floor(
+      (endTime.getTime() - startTime.getTime()) / 1000); 
+
+    // Calculate minutes and round to 30s
+    let minutes = Math.floor(duration / 60);
+    if (duration % 60 >= 30) minutes += 1;
+
+    return {duration, minutes}
+}
+
 export default {
     getAllCalls,
     calculateStats,
@@ -142,5 +153,6 @@ export default {
     filterCalls,
     calculateDayEarnings,
     deleteCall,
-    resolveNotFinishedCalls
+    resolveNotFinishedCalls,
+    calculateDuration
 }

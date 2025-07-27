@@ -36,12 +36,7 @@ class CallTracker {
     const startTime = new Date(callData.startTime);
 
     // Duration in seconds
-    const duration = Math.floor(
-      (endTime.getTime() - startTime.getTime()) / 1000); 
-
-    // Calculate minutes and round to 30s
-    let minutes = Math.floor(duration / 60);
-    if (duration % 60 >= 30) minutes += 1;
+    const {duration, minutes} = callService.calculateDuration(startTime, endTime)
 
     return {duration, minutes, endTime}
   }

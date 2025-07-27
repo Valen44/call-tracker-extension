@@ -79,10 +79,10 @@ export const columns: ColumnDef<Call>[] = [
     id: "actions",
     header: () => { return <div className=""></div>},
     cell: ({ row }) => {
-      const callID = row.original.id;
+      const call = row.original;
 
       return (
-        <ActionsDropDown callID={callID}/>
+        <ActionsDropDown call={call}/>
       );
     },
   },

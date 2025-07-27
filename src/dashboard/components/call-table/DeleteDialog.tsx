@@ -18,12 +18,12 @@ import { toast } from "sonner";
 
 
 export const DeleteDialog = ({
-  isDeleteDialog,
-  setIsDeleteDialog,
+  open,
+  onOpenChange,
   callID
 }: {
-  isDeleteDialog: boolean;
-  setIsDeleteDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   callID: string;
 }) => {
 
@@ -32,8 +32,8 @@ export const DeleteDialog = ({
   return (
     <>
       <Dialog
-        open={isDeleteDialog}
-        onOpenChange={() => setIsDeleteDialog(!isDeleteDialog)}
+        open={open}
+        onOpenChange={() => onOpenChange(!open)}
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>

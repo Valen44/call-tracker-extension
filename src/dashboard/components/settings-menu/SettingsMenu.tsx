@@ -39,96 +39,96 @@ export const SettingsMenu = () => {
 
 
   useEffect(() => {
-      settingsService.loadSettings().then((settings) => {
-        setDashboardTheme(settings.appearence.dashboard);
-        setPopupTheme(settings.appearence.popup);
-        setRate(settings.rate);
-        setCallSorting(settings.callSorting);
+    settingsService.loadSettings().then((settings) => {
+      setDashboardTheme(settings.appearence.dashboard);
+      setPopupTheme(settings.appearence.popup);
+      setRate(settings.rate);
+      setCallSorting(settings.callSorting);
     });
   }, [openSettings]);
 
   const handleSubmit = async () => {
-  const settings: ExtensionSettings = {
-    rate: rate,
-    appearence: {
-      dashboard: dashboardTheme,
-      popup: popupTheme
-    },
-    callSorting: callSorting
-  };
+    const settings: ExtensionSettings = {
+      rate: rate,
+      appearence: {
+        dashboard: dashboardTheme,
+        popup: popupTheme
+      },
+      callSorting: callSorting
+    };
 
-  try {
+    try {
+      await settingsService.saveSettings(settings);
+      toast.success("Settings saved!")
+    } catch (error) {
+      toast.error("Error while saving settings")
+      console.error("Error while saving settings", error)
+    }
+
     await settingsService.saveSettings(settings);
-    toast.success("Settings saved!")
-  } catch (error) {
-    toast.error("Error while saving settings")
-    console.error("Error while saving settings", error)
-  }
-
-  await settingsService.saveSettings(settings);
-  await setThemeFromSettings("dashboard");
-  window.dispatchEvent(new CustomEvent("settingsUpdated"));
-};
+    await setThemeFromSettings("dashboard");
+    window.dispatchEvent(new CustomEvent("settingsUpdated"));
+  };
 
   return (
     <>
-    <Button variant={"outline"} onClick={() => setOpenSettings(!openSettings)}>
+      <Button variant={"outline"} onClick={() => setOpenSettings(!openSettings)}>
         <Settings />
-    </Button>
+      </Button>
 
-    <Sheet open={openSettings} onOpenChange={() => setOpenSettings(!openSettings)}>
-      <SheetContent className="p-3">
-        <SheetHeader>
-          <div className="flex items-center gap-2 justify-start">
-            <Settings />
-            <SheetTitle className="text-2xl font-bold">Settings</SheetTitle>
+      <Sheet open={openSettings} onOpenChange={() => setOpenSettings(!openSettings)}>
+        <SheetContent className="p-3">
+          <SheetHeader>
+            <div className="flex items-center gap-2 justify-start">
+              <Settings />
+              <SheetTitle className="text-2xl font-bold">Settings</SheetTitle>
+            </div>
+          </SheetHeader>
+          <SheetDescription></SheetDescription>
+
+          <div className="px-4 flex justify-between gap-6 mb-2">
+            <Label className="text-nowrap">Rate per minute</Label>
+            <div className="w-[45%]">
+              <NumberInput
+                suffix=" USD"
+                prefix="$"
+                min={0.01}
+                max={1}
+                stepper={0.01}
+                decimalScale={2}
+                defaultValue={rate}
+                onValueChange={(e) => e && setRate(e)}
+              ></NumberInput>
+            </div>
           </div>
-        </SheetHeader>
-        <SheetDescription></SheetDescription>
 
-        <div className="px-4 flex justify-between gap-6 mb-2">
-          <Label className="text-nowrap">Rate per minute</Label>
-          <div className="w-[45%]">
-            <NumberInput
-              suffix=" USD"
-              prefix="$"
-              min={0.01}
-              max={1}
-              stepper={0.01}
-              decimalScale={2}
-              defaultValue={rate}
-              onValueChange={(e) => e && setRate(e)}
-            ></NumberInput>
+          <div className="px-4 flex justify-between gap-6 mb-2">
+            <Label className="text-nowrap">Dashboard theme</Label>
+            <ThemeSelectorButton valueState={[dashboardTheme, setDashboardTheme]} />
           </div>
-        </div>
 
-        <div className="px-4 flex justify-between gap-6 mb-2">
-          <Label className="text-nowrap">Dashboard theme</Label>
-          <ThemeSelectorButton valueState={[dashboardTheme, setDashboardTheme]}/>
-        </div>
+          <div className="px-4 flex justify-between gap-6 mb-2">
+            <Label className="text-nowrap">Popup theme</Label>
+            <ThemeSelectorButton valueState={[popupTheme, setPopupTheme]} />
+          </div>
 
-        <div className="px-4 flex justify-between gap-6 mb-2">
-          <Label className="text-nowrap">Popup theme</Label>
-          <ThemeSelectorButton valueState={[popupTheme, setPopupTheme]}/>
-        </div>
+          <div className="px-4 flex justify-between gap-6 mb-2">
+            <Label className="text-nowrap">Call Sorting by Start Time</Label>
+            <SortingSelectorButton valueState={[callSorting, setCallSorting]} />
+          </div>
 
-        <div className="px-4 flex justify-between gap-6 mb-2">
-          <Label className="text-nowrap">Call Sorting by Start Time</Label>
-          <SortingSelectorButton valueState={[callSorting, setCallSorting]}/>
-        </div>
+          <SheetFooter>
+            <p className="text-sm text-muted-foreground">Changing the rate will only take effect on future calls after reloading the agent portal</p>
 
-        <SheetFooter>
-          <p className="text-sm text-muted-foreground">Changing the rate will only take effect on future calls after reloading the agent portal</p>
-
-          <SheetClose asChild>
-            <Button type="submit" onClick={() => handleSubmit()}>Save changes</Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button variant="outline">Close</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+            <SheetClose asChild>
+              <Button type="submit" onClick={() => handleSubmit()}>Save changes</Button>
+            </SheetClose>
+            <SheetClose asChild>
+              <Button variant="outline">Close</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </>
   );
 };

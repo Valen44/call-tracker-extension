@@ -60,10 +60,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (
-          document.activeElement ===
-          (ref as React.RefObject<HTMLInputElement>).current
-        ) {
+        const input = (ref as React.RefObject<HTMLInputElement>)?.current;
+        if (input && document.activeElement === input) {
           if (e.key === 'ArrowUp') {
             handleIncrement();
           } else if (e.key === 'ArrowDown') {
@@ -71,6 +69,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           }
         }
       };
+
 
       window.addEventListener('keydown', handleKeyDown);
 
@@ -135,6 +134,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
         <div className="flex flex-col h-full">
           <Button
+            type="button"
             aria-label="Increase value"
             className="px-2 rounded-l-none rounded-br-none border-input border-l-0 border-b-[0.5px] focus-visible:relative h-1/2"
             variant="outline"
@@ -144,6 +144,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
             <ChevronUp size={15} />
           </Button>
           <Button
+            type="button"
             aria-label="Decrease value"
             className="px-2 rounded-l-none rounded-tr-none border-input border-l-0 border-t-[0.5px] focus-visible:relative h-1/2"
             variant="outline"

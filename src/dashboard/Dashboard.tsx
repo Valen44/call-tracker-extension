@@ -32,7 +32,7 @@ export const Dashboard: React.FC = () => {
 
   const [dayEarnings, setDayEarnings] = useState<DayEarnings>({});
 
-  const getCalls = async () => {
+  const getCalls = async (withTable=true) => {
     try {
       const [allTimeCalls, yearCalls, monthCalls, todayCalls] =
         await Promise.all([
@@ -42,7 +42,7 @@ export const Dashboard: React.FC = () => {
           callService.filterCalls({ period: "today" }),
         ]);
 
-      setFilteredCalls(todayCalls);
+      if (withTable) setFilteredCalls(todayCalls);
 
       const updatedStats = {
         year: callService.calculateStats(yearCalls).totalEarnings,
@@ -65,6 +65,7 @@ export const Dashboard: React.FC = () => {
   };
 
   const reloadTable = () => {
+    getCalls(false);
     filterCalls(filter);
   }
 
