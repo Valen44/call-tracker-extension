@@ -6,7 +6,7 @@ import { type Call } from "@/types/Call";
 
 import { ActionsDropDown } from "./ActionsDropDown";
 
-import { DataTableColumnHeader } from "./DataTableColumnHeader";
+import { DataTableColumnHeader } from "@/components/ui/DataTableColumnHeader";
 
 
 export const columns: ColumnDef<Call>[] = [

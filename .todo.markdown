@@ -1,6 +1,6 @@
 ## Call Managment
 [X] Edit calls
-[] button to Create a call 
+[X] button to Create a call 
 [X] Fix stats and calendar not updating when deleting/editing calls
 [X] Modal for when deleting/editing calls
 [x] Reload table after deleting

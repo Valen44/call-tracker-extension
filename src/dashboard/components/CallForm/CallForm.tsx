@@ -24,7 +24,6 @@ import { CallContext } from "@/dashboard/context/CallContext";
 
 const callSchema = z
   .object({
-    id: z.string(),
     startTime: z.date({ message: "You must choose a start time" }),
     endTime: z.date().optional(),
     duration: z.number().optional(),
@@ -51,28 +50,32 @@ const callSchema = z
 
 type CallFormValues = z.infer<typeof callSchema>;
 
-interface CallEditFormProps {
-  call: Call;
-  onClose: React.Dispatch<React.SetStateAction<boolean>>
+interface CallFormProps {
+  call?: Call;
+  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+  type: "create" | "edit";
 }
 
-export const CallEditForm = ({ call, onClose }: CallEditFormProps) => {
+export const CallForm = ({ call, onClose, type }: CallFormProps) => {
   const { reloadTable } = useContext(CallContext);
+
+  const defaultValues = call 
+    ? {
+        startTime: new Date(call.startTime),
+        endTime: call.endTime ? new Date(call.endTime) : undefined,
+        available: call.available ? call.available : undefined,
+        status: call.status
+      }
+    : undefined;
 
   const form = useForm<CallFormValues>({
     resolver: zodResolver(callSchema),
-    defaultValues: {
-      id: call.id,
-      startTime: new Date(call.startTime),
-      endTime: call.endTime ? new Date(call.endTime) : undefined,
-      available: call.available ? call.available : undefined,
-      status: call.status
-    },
+    defaultValues: defaultValues
   });
 
   const onSubmit = async (values: CallFormValues) => {
     const callData: Call = {
-      id: values.id,
+      id: (type === "create" || !call) ? values.startTime.getTime().toString() : call.id,
       startTime: values.startTime.toISOString(),
       endTime: values.endTime ? values.endTime.toISOString() : undefined,
       duration: durationInSeconds ?? undefined,
@@ -83,12 +86,12 @@ export const CallEditForm = ({ call, onClose }: CallEditFormProps) => {
     try {
       if (callData) callService.saveCall(callData).then(() => {
         console.table(callData)
-        toast.success("Call editted successfully!")
+        toast.success(`Call ${type === "create" ? "created" : "edited"} successfully!`)
         reloadTable();
       });
     } catch (error) {
-      toast.error("Error while editting call")
-      console.error("Error while editting call", error)
+      toast.error(`Error when ${type === "create" ? "creating" : "editting"} call`)
+      console.error(`Error when ${type === "create" ? "creating" : "editing"} call:`, error)
     }
     onClose(false);
   };
@@ -220,7 +223,7 @@ export const CallEditForm = ({ call, onClose }: CallEditFormProps) => {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="mb-2">Available</FormLabel>
+                <FormLabel className="mb-2">Status</FormLabel>
                 <FormControl>
                   <Select
                     defaultValue={field.value}
@@ -248,7 +251,7 @@ export const CallEditForm = ({ call, onClose }: CallEditFormProps) => {
             Close
           </Button>
           <Button type="submit">
-            Save
+            {type === "create" ? "Create" : "Save"}
           </Button>
         </div>
       </form>

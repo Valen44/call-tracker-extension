@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { DeleteDialog } from "./DeleteDialog";
 import { MoreHorizontal } from "lucide-react";
-import { EditDialog } from './EditDialog';
+import { CallDialog } from '@/dashboard/components/CallForm/CallDialog';
 import type { Call } from '@/types/Call';
 
 
@@ -48,7 +48,7 @@ export const ActionsDropDown = ({call} : {call : Call}) => {
         </DropdownMenu>
 
         <DeleteDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog} callID={call.id} />
-        <EditDialog open={openEditDialog} onOpenChange={setOpenEditDialog} call={call} />
+        <CallDialog open={openEditDialog} onOpenChange={setOpenEditDialog} call={call} type="edit" />
     </div>
   )
 }

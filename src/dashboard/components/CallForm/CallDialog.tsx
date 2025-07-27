@@ -6,18 +6,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CallEditForm } from "./CallEditForm";
+import { CallForm } from "./CallForm";
 import type { Call } from "@/types/Call";
 
 
-export const EditDialog = ({
+export const CallDialog = ({
   open,
   onOpenChange,
-  call
+  call,
+  type,
 }: {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
-  call: Call;
+  call?: Call;
+  type: "create" | "edit";
 }) => {
 
   return (
@@ -28,12 +30,12 @@ export const EditDialog = ({
       >
         <DialogContent className="max-w-sm sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Edit Call</DialogTitle>
+            <DialogTitle>{type === "create" ? "New" : "Edit"} Call</DialogTitle>
           </DialogHeader>
           <DialogDescription>
           </DialogDescription>
 
-          <CallEditForm call={call} onClose={onOpenChange}></CallEditForm>
+          <CallForm call={call} onClose={onOpenChange} type={type}></CallForm>
         </DialogContent>
       </Dialog>
     </>
