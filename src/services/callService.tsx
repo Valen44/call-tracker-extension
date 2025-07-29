@@ -145,6 +145,55 @@ const calculateDuration = (startTime: Date, endTime: Date) => {
     return {duration, minutes}
 }
 
+const exportCalls = async (): Promise<Call[]> => {
+  const allCalls = await getAllCalls();
+  // Filter out ongoing calls before exporting
+  return allCalls.filter(call => call.status !== "onGoing");
+};
+
+const importCalls = async (callsToImport: Call[]) => {
+  const result = await chrome.storage.local.get(['calls']);
+  const existingCalls = result.calls || {};
+  const importedCalls: { [key: string]: Call } = {};
+  let skippedCount = 0;
+  const totalCallsToImport = callsToImport.length;
+
+  for (const call of callsToImport) {
+    // Check if call with the same ID already exists
+    if (existingCalls[call.id]) {
+      console.warn(`Skipping import of duplicate call ID: ${call.id}`);
+      skippedCount++;
+      continue;
+    }
+    // Validate calls before importing
+    if (call.status === "onGoing") {
+      console.warn(`Skipping import of ongoing call: ${call.id}`);
+      skippedCount++;
+      continue;
+    }
+    if (call.endTime === undefined || new Date(call.endTime) < new Date(call.startTime)) {
+      console.warn(`Skipping import of invalid call (endTime before startTime or missing endTime): ${call.id}`);
+      skippedCount++;
+      continue;
+    }
+    importedCalls[call.id] = call;
+  }
+
+  const updatedCalls = { ...existingCalls, ...importedCalls };
+  await chrome.storage.local.set({ calls: updatedCalls });
+
+  return { skippedCount, totalCallsToImport };
+};
+
+const deleteAllCalls = async () => {
+  try {
+    await chrome.storage.local.remove('calls');
+  } catch (error) {
+    console.error('Error deleting all calls:', error);
+    throw error; // Re-throw the error to be caught by the caller
+  }
+};
+
 export default {
     getAllCalls,
     calculateStats,
@@ -154,5 +203,8 @@ export default {
     calculateDayEarnings,
     deleteCall,
     resolveNotFinishedCalls,
-    calculateDuration
+    calculateDuration,
+    exportCalls,
+    importCalls,
+    deleteAllCalls,
 }
