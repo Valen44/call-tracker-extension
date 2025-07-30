@@ -1,5 +1,9 @@
-import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
 import {
@@ -11,28 +15,23 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import { ChevronsUpDown, Settings } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 
 import { ThemeSelectorButton } from "./ThemeSelectorButton";
 
-import settingsService,
-{
+import settingsService, {
   type Appearence,
   type ExtensionSettings,
   defaultSettings,
 } from "@/services/settingsService";
 import setThemeFromSettings from "@/services/themeService";
-import { SortingSelectorButton } from "./SortingSelectorButton";
 import { toast } from "sonner";
+import { SortingSelectorButton } from "./SortingSelectorButton";
 
+import { CallContext } from "@/dashboard/context/CallContext";
 import callService from "@/services/callService";
 import { DeleteDialog } from "../DeleteDialog";
-import { CallContext } from "@/dashboard/context/CallContext";
 
 
 export const SettingsMenu = () => {

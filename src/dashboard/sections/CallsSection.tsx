@@ -1,9 +1,9 @@
+import { Card } from "@/components/ui/card";
+import callService from "@/services/callService";
+import dateService from "@/services/dateService";
+import { type Call } from "@/types/Call";
 import { columns } from '../components/call-table/columns';
 import { DataTable } from '../components/call-table/data-table';
-import { type Call } from "@/types/Call"
-import { Card } from "@/components/ui/card";
-import dateService from "@/services/dateService";
-import callService from "@/services/callService";
 
 
 
@@ -12,9 +12,9 @@ export const CallsSection = ({calls} : {calls: Call[]}) => {
   const stats = callService.calculateStats(calls);
 
   return (
-    <div className="mb-6 w-full">
+    <div className="w-full mb-6">
         <div>
-          <Card className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 p-6  mb-3">
+          <Card className="grid grid-cols-2 p-6 mb-3 sm:grid-cols-3 lg:grid-cols-6">
                   <div className="stat">
                     <h1 className="stat-value">{stats.totalCalls}</h1>
                     <p className="stat-label"># Calls</p>

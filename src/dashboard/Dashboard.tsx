@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { CallContext } from "./context/CallContext.tsx";
 
-import { type Call } from "@/types/Call.tsx";
 import { type filterCallsProps } from "@/services/callService.tsx";
-import { type DayEarnings } from "@/types/Call.tsx";
+import { type Call, type DayEarnings } from "@/types/Call.tsx";
+import { CalendarSection } from "./sections/CalendarSection.tsx";
+import { CallsSection } from "./sections/CallsSection.tsx";
 import {
   type EarningsCardProps,
   EarningsCard,
 } from "./sections/EarningsCard.tsx";
 import { FilterSection } from "./sections/FilterSection.tsx";
-import { CallsSection } from "./sections/CallsSection.tsx";
-import { CalendarSection } from "./sections/CalendarSection.tsx";
 import { HeaderSection } from "./sections/HeaderSection.tsx";
 
 import callService from "@/services/callService.tsx";
@@ -75,7 +74,7 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="transition-colors duration-200 ease-in-out p-10">
+    <div className="p-10 transition-colors duration-200 ease-in-out">
       <CallContext.Provider value={{ reloadTable, filterCalls }}>
 
         <HeaderSection />

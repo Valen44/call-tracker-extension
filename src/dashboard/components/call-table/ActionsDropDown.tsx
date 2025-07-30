@@ -15,10 +15,6 @@ import { CallContext } from '@/dashboard/context/CallContext';
 import { toast } from 'sonner';
 import { DeleteDialog } from '../DeleteDialog';
 
-
-
-
-
 export const ActionsDropDown = ({call} : {call : Call}) => {
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
