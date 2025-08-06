@@ -27,8 +27,8 @@ const createStatsDisplay = () => {
             const x = e.clientX - offsetX;
             const y = e.clientY - offsetY;
             if (tracker) {
-            tracker.style.left = `${x}px`;
-            tracker.style.top = `${y}px`;
+                tracker.style.left = `${x}px`;
+                tracker.style.top = `${y}px`;
             }
         }
     });
@@ -50,18 +50,18 @@ const updateStats = async () => {
     const inCallTimeEl = document.getElementById('in-call-time');
     const hourlyRateEl = document.getElementById('hourly-rate');
     const avgAvailEl = document.getElementById('avg-avail');
-    
+
     if (totalCallsEl) {
-        totalCallsEl.textContent = `${statsToday.totalCalls}`;
+        totalCallsEl.textContent = `${statsToday.totalCalls || 0}`;
     }
     if (todayEarningsEl) {
-        todayEarningsEl.textContent = `$${statsToday.totalEarnings.toFixed(2)}`;
+        todayEarningsEl.textContent = `$${statsToday.totalEarnings.toFixed(2) || 0}`;
     }
     if (inCallTimeEl) {
         inCallTimeEl.textContent = `${dateService.formatDuration(statsToday.totalTime || 0)}`;
     }
     if (hourlyRateEl) {
-        hourlyRateEl.textContent = `$${statsToday.avgHourlyRate.toFixed(2)}`;
+        hourlyRateEl.textContent = `$${statsToday.avgHourlyRate.toFixed(2) || 0}`;
     }
     if (avgAvailEl) {
         avgAvailEl.textContent = `${dateService.formatDuration(statsToday.avgAvailableTime || 0)}`;
@@ -75,7 +75,7 @@ const updateTimer = (startTime: number) => {
     const totalSeconds = Math.floor(ms / 1000);
     const timerStr = dateService.formatDuration(totalSeconds, true);
     if (timerElement) timerElement.textContent = timerStr;
-    
+
 }
 
 
@@ -87,18 +87,18 @@ const stopTimer = () => {
 const setStatus = (status: "available" | "oncall" | "unavailable") => {
     const headerEl = document.getElementById("tracker-header")
     if (headerEl === null) return;
-    
+
     switch (status) {
-    case "available":
-      headerEl.className = "status-available";
-      break;
-    case "oncall":
-      headerEl.className = "status-oncall";
-      break;
-    case "unavailable":
-      headerEl.className = "status-unavailable";
-      break;
-  }
+        case "available":
+            headerEl.className = "status-available";
+            break;
+        case "oncall":
+            headerEl.className = "status-oncall";
+            break;
+        case "unavailable":
+            headerEl.className = "status-unavailable";
+            break;
+    }
 }
 
 export default { createStatsDisplay, updateStats, stopTimer, setStatus, updateTimer }
