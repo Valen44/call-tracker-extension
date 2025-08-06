@@ -14,7 +14,8 @@
   "content_scripts": [
     {
       "matches": [
-        "YOUR PORTAL'S LINK HERE",
+        "https://agent.lsaweb.com/agent",
+        "https://valen44.github.io/*"
       ],
       "js": [
         "./assets/content.js",
