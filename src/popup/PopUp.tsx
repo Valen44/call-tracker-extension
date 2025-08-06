@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { StatsCard } from "./sections/StatsCard";
 import { CallsCard } from "./sections/CallsCard";
 import { Button } from "@/components/ui/button";
-import { ExternalLink} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 import callService from "@/services/callService";
 import { type CallStats, type Call } from "@/types/Call";
@@ -26,14 +26,14 @@ export const PopUp = () => {
 
   useEffect(() => {
     console.log("Fetching calls...")
-    callService.filterCalls({period: "today"}).then((calls) => {
+    callService.filterCalls({ period: "today" }).then((calls) => {
       calls.reverse();
       setCalls(calls);
       const stats = callService.calculateStats(calls);
       setStats(stats);
     });
 
-    callService.filterCalls({period: "month"}).then((calls) => {
+    callService.filterCalls({ period: "month" }).then((calls) => {
       const monthEarnings = callService.calculateStats(calls).totalEarnings;
       setMonthEarnings(monthEarnings);
     })
@@ -58,12 +58,18 @@ export const PopUp = () => {
 
       <Separator className="mb-3" />
 
-      <StatsCard stats={stats} monthEarnings={monthEarnings}/>
+      <StatsCard stats={stats} monthEarnings={monthEarnings} />
 
-      <CallsCard calls={calls}/>
+      <CallsCard calls={calls} />
 
       <div className="flex justify-center gap-2">
-        <Button onClick={() => openDashboard()}><ExternalLink/> Dashboard</Button>
+        <Button onClick={() => openDashboard()}><ExternalLink /> Dashboard</Button>
+        <a href='https://ko-fi.com/S6S31J8RFT' target='_blank'>
+          <Button>
+            <img src="https://storage.ko-fi.com/cdn/brandasset/v2/kofi_symbol.png" width={20} height={20}></img>
+            Donations
+          </Button>
+        </a>
       </div>
 
     </div>
