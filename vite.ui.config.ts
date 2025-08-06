@@ -11,6 +11,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         dashboard: resolve(__dirname, 'src/dashboard/dashboard.html'),
+        popup: resolve(__dirname, 'src/popup/popup.html'),
         preloadTheme: resolve(__dirname, 'src/dashboard/preloadtheme.ts'),
       },
       output: {
