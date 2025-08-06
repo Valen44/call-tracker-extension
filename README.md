@@ -2,7 +2,7 @@
 
 A browser extension designed to automatically track call metrics, earnings, and time for interpreters.
 
-<p>
+<p align="center">
     <img src="https://i.imgur.com/0EHNu62.png" width="70%" height="70%" hspace="5" >
     <img src="https://i.imgur.com/M6iC32h.png" width="25%" height="25%" hspace="15" >
 </p>
