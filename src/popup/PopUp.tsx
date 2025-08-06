@@ -48,7 +48,7 @@ export const PopUp = () => {
   }
 
   return (
-    <div className="w-[350px] p-4 transition-colors duration-200 ease-in-out">
+    <div className="w-[350px] px-4 pt-4 pb-2 transition-colors duration-200 ease-in-out">
       <header className="flex gap-2 items-center justify-center mb-3">
         <div className="bg-accent-foreground rounded-2xl p-3 flex justify-center items-center">
           <Phone className="stroke-background" />
