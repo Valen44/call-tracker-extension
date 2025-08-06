@@ -2,13 +2,14 @@
 
 A browser extension designed to automatically track call metrics, earnings, and time for interpreters.
 
-![](https://i.imgur.com/0EHNu62.png)
-
-![](https://i.imgur.com/c8Y0wPA.png)
+<p>
+    <img src="https://i.imgur.com/0EHNu62.png" width="70%" height="70%" hspace="5" >
+    <img src="https://i.imgur.com/M6iC32h.png" width="25%" height="25%" hspace="15" >
+</p>
 
 ## Installation
 
-Since this extension is not on the Chrome Web Store, you need to load it manually in Developer Mode. The instructions are for Chrome but you can use this extension on any chromium based browser (Firefox should work but I haven't tested it)
+Since this extension is not on the Chrome Web Store, you need to load it manually in Developer Mode. The instructions are for Chrome but you can use this extension on any chromium based browser (I haven't tested Firefox)
 1.  **Download the Extension**: [here](https://github.com/Valen44/call-tracker-extension/releases/latest)
     - Go to the **Releases** page of this repository.
     - Download the latest `call-tracker-extension-vX.X.X.zip` file.
