@@ -1,4 +1,4 @@
-# Call Tracker for LSA
+# Call Tracker
 
 A browser extension designed to automatically track call metrics, earnings, and time for interpreters.
 
