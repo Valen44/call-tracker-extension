@@ -17,7 +17,7 @@ export class InvalidState extends BaseState {
   enter() {
 
     console.log("Entering INVALID state");
-    console.error("Agent went trough an invalid state transition from ", this.prevState.name, " to ", this.nextStateText, ". Please go to available or unavailable state manually.");
+    console.warn("Agent went trough an invalid state transition from ", this.prevState.name, " to ", this.nextStateText, ". Please go to available or unavailable state manually.");
 
     chrome.runtime.sendMessage({
       type: "SET_BADGE",
