@@ -17,6 +17,7 @@ import setThemeFromSettings from "@/services/themeService.tsx";
 
 export const Dashboard: React.FC = () => {
   const [filteredCalls, setFilteredCalls] = useState<Call[]>([]);
+  const [calendarCalls, setCalendarCalls] = useState<Call[]>([]);
   const [filter, setFilter] = useState<filterCallsProps>({
     period: "today",
     startDateStr: "",
@@ -32,8 +33,9 @@ export const Dashboard: React.FC = () => {
 
   const getCalls = async (withTable = true) => {
     try {
-      const [yearCalls, monthCalls, todayCalls] =
+      const [allTimeCalls, yearCalls, monthCalls, todayCalls] =
         await Promise.all([
+          callService.filterCalls({ period: "allTime" }),
           callService.filterCalls({ period: "year" }),
           callService.filterCalls({ period: "month" }),
           callService.filterCalls({ period: "today" }),
@@ -48,6 +50,7 @@ export const Dashboard: React.FC = () => {
       };
 
       setStatsHeader(updatedStats);
+      setCalendarCalls(allTimeCalls);
     } catch (error) {
       console.error("Error loading call data:", error);
     }
@@ -85,7 +88,7 @@ export const Dashboard: React.FC = () => {
         <section className="flex gap-6 flex-wrap min-[1150px]:flex-nowrap justify-center min-[1150px]:justify-between">
           <CallsSection calls={filteredCalls} />
 
-          <CalendarSection filteredCalls={filteredCalls} />
+          <CalendarSection filteredCalls={calendarCalls} />
         </section>
 
       </CallContext.Provider>
