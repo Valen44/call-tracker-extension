@@ -3,6 +3,7 @@ import { StateManager } from "./StateManager.ts";
 
 export abstract class BaseState implements AgentState {
   abstract name: string;
+  abstract color: string;
   protected manager: StateManager;
 
   constructor(manager: StateManager) {

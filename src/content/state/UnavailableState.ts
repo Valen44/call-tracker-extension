@@ -4,6 +4,7 @@ import { InvalidState } from "./InvalidState.ts";
 
 export class UnavailableState extends BaseState {
   name = "UNAVAILABLE";
+  color = "#630404";
 
   enter() {
 
@@ -11,7 +12,7 @@ export class UnavailableState extends BaseState {
 
     chrome.runtime.sendMessage({
       type: "SET_BADGE",
-      color: "#FF5722",
+      color: this.color,
       text: "U",
     });
 

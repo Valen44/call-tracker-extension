@@ -7,6 +7,7 @@ import { UnavailableState } from "./UnavailableState.ts";
 
 export class RingingState extends BaseState {
   name = "RINGING";
+  color = "rgb(10, 6, 88)";
   private availableStartTime: Date;
 
   constructor(manager: StateManager, availableStartTime: Date) {
@@ -20,7 +21,7 @@ export class RingingState extends BaseState {
 
     chrome.runtime.sendMessage({
       type: "SET_BADGE",
-      color: "#0d00ffff",
+      color: this.color,
       text: "R",
     });
 

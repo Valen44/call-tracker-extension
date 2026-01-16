@@ -63,26 +63,6 @@ const CSS = `
   padding: 10px;
 }
 
-.status-unavailable {
-  background-color: rgb(99, 4, 4);
-}
-
-.status-available {
-  background-color: #2f6304;
-}
-
-.status-oncall {
-  background-color: #9035e5ff;
-}
-
-.status-acw {
-  background-color: #FF9800;
-}
-
-.status-ringing {
-  background-color: #0d00ffff;
-}
-
 .stat {
   display: flex;
   flex-direction: column;

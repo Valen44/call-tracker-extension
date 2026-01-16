@@ -1,6 +1,7 @@
 import statsContainer from "./statsContainer";
 import dateService from "@/services/dateService";
 import callService from "@/services/callService";
+import type { AgentState } from "./state/AgentState";
 
 const createStatsDisplay = () => {
     const style = document.createElement("style");
@@ -77,27 +78,12 @@ const updateTimer = (seconds: number) => {
 
 }
 
-const setStatus = (status: "available" | "ringing" | "oncall" | "acw" | "unavailable") => {
+
+const setStatus = (status: AgentState) => {
     const headerEl = document.getElementById("tracker-header")
     if (headerEl === null) return;
 
-    switch (status) {
-        case "available":
-            headerEl.className = "status-available";
-            break;
-        case "ringing":
-            headerEl.className = "status-ringing";
-            break;
-        case "oncall":
-            headerEl.className = "status-oncall";
-            break;
-        case "acw":
-            headerEl.className = "status-acw";
-            break;
-        case "unavailable":
-            headerEl.className = "status-unavailable";
-            break;
-    }
+    headerEl.style.backgroundColor = status.color;
 }
 
 export default { createStatsDisplay, updateStats, setStatus, updateTimer }

@@ -6,12 +6,13 @@ import { UnavailableState } from "./UnavailableState.ts";
 
 export class ACWState extends BaseState {
   name = "ACW";
+  color = "#633a04";
 
   enter() {
     console.log("Entering ACW State");
     chrome.runtime.sendMessage({
       type: "SET_BADGE",
-      color: "#FF9800",
+      color: this.color,
       text: "W",
     });
 

@@ -7,9 +7,11 @@ import { UnavailableState } from "./UnavailableState.ts";
 import callService from "@/services/callService";
 import dateUtils from "@/services/dateService";
 import { InvalidState } from "./InvalidState.ts";
+import statsDisplay from "../statsDisplay.ts";
 
 export class OnCallState extends BaseState {
   name = "ON_CALL";
+  color = "rgb(55, 9, 98)";
   private availableStartTime: Date;
   public currentCall: Call | undefined;
 
@@ -24,7 +26,7 @@ export class OnCallState extends BaseState {
     console.log("Entering On-Call State");
     chrome.runtime.sendMessage({
       type: "SET_BADGE",
-      color: "#9035e5ff",
+      color: this.color,
       text: "C",
     });
 
@@ -35,6 +37,7 @@ export class OnCallState extends BaseState {
     this.callSavingIntervalID = window.setInterval(() => {
       this.saveCallProgress(false);
       console.log("Call progress saved");
+      statsDisplay.updateStats();
     }, 60000);
 
   }

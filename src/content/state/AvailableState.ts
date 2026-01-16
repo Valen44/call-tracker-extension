@@ -6,6 +6,7 @@ import { InvalidState } from "./InvalidState.ts";
 
 export class AvailableState extends BaseState {
   name = "AVAILABLE";
+  color = "#2f6304";
 
   private availableStartTime: Date = new Date();
 
@@ -15,7 +16,7 @@ export class AvailableState extends BaseState {
 
     chrome.runtime.sendMessage({
       type: "SET_BADGE",
-      color: "#4CAF50",
+      color: this.color,
       text: "A",
     });
 

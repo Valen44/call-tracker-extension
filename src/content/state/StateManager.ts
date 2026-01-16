@@ -1,3 +1,4 @@
+import statsDisplay from "../statsDisplay.ts";
 import { type AgentState } from "./AgentState.ts";
 import { UnavailableState } from "./UnavailableState.ts";
 
@@ -81,21 +82,18 @@ export class StateManager {
     this.updateWidget();
   }
 
-  getElapsed(): number {
-    return this.timer;
-  }
-
   // ---------- WIDGET ----------
   updateWidget() {
-    const el = document.querySelector("#call-timer-widget");
+    const el = document.querySelector(".tracker");
     if (!el) return;
 
-    const m = Math.floor(this.timer / 60).toString().padStart(2, "0");
-    const s = (this.timer % 60).toString().padStart(2, "0");
+    statsDisplay.setStatus(this.currentState);
 
-    el.textContent = `${this.currentState.name} · ${m}:${s}`;
+    statsDisplay.updateTimer(this.timer);
 
     if (this.config.websiteTitleTimer) {
+      const m = Math.floor(this.timer / 60).toString().padStart(2, "0");
+      const s = (this.timer % 60).toString().padStart(2, "0");
       document.title = `(${m}:${s}) ${this.config.companyName}`;
     }
   }
