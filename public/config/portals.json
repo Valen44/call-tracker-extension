@@ -1,46 +1,11 @@
 [
     {
         "enabled": true,
-        "companyName": "Test",
-        "payRate": 0.15,
-        "color": "#4caf50",
-        "portalConfig": {
-            "portalLink": "https://valen44.github.io/",
-            "selector": "#span-agentstatus-text",
-            "rounding": true,
-            "validCallDuration": 120,
-            "websiteTitleTimer": true,
-            "keywords": {
-                "available": [
-                    "Available"
-                ],
-                "onCall": [
-                    "On-Call",
-                    "Interpreting"
-                ],
-                "acw": [
-                    "ACW",
-                    "After Call",
-                    "Wrap Up"
-                ],
-                "unavailable": [
-                    "Offline",
-                    "Unavailable"
-                ],
-                "ringing": [
-                    "Ringing",
-                    "Attempted"
-                ]
-            }
-        }
-    },
-    {
-        "enabled": true,
         "companyName": "LSA",
         "payRate": 0.15,
         "color": "#9e0d0d",
         "portalConfig": {
-            "portalLink": "https://lsa",
+            "portalLink": "https://agent.lsaweb.com/agent",
             "selector": "#span-agentstatus-text",
             "rounding": true,
             "validCallDuration": 120,
@@ -50,20 +15,15 @@
                     "Available"
                 ],
                 "onCall": [
-                    "On-Call",
-                    "Interpreting"
+                    "On-Call"
                 ],
                 "acw": [
-                    "ACW",
-                    "After Call",
-                    "Wrap Up"
+                    "Wrap-Up"
                 ],
                 "unavailable": [
-                    "Offline",
                     "Unavailable"
                 ],
                 "ringing": [
-                    "Ringing",
                     "Attempted"
                 ]
             }
@@ -72,11 +32,11 @@
     {
         "enabled": true,
         "companyName": "Propio",
-        "payRate": 0.15,
+        "payRate": 0.11,
         "color": "#15139c",
         "portalConfig": {
             "portalLink": "https://interpreters.propio-ls.com/portal",
-            "selector": "#span-agentstatus-text",
+            "selector": ".call-status-text",
             "rounding": false,
             "validCallDuration": 60,
             "websiteTitleTimer": true,
@@ -85,7 +45,6 @@
                     "Available"
                 ],
                 "onCall": [
-                    "On-Call",
                     "Interpreting"
                 ],
                 "acw": [
@@ -94,12 +53,10 @@
                     "Wrap Up"
                 ],
                 "unavailable": [
-                    "Offline",
-                    "Unavailable"
+                    "Offline"
                 ],
                 "ringing": [
-                    "Ringing",
-                    "Attempted"
+                    "Ringing"
                 ]
             }
         }
