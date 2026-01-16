@@ -32,9 +32,8 @@ export const Dashboard: React.FC = () => {
 
   const getCalls = async (withTable = true) => {
     try {
-      const [allTimeCalls, yearCalls, monthCalls, todayCalls] =
+      const [yearCalls, monthCalls, todayCalls] =
         await Promise.all([
-          callService.filterCalls({ period: "allTime" }),
           callService.filterCalls({ period: "year" }),
           callService.filterCalls({ period: "month" }),
           callService.filterCalls({ period: "today" }),
