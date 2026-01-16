@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import DateRangePicker from "../components/DateRangePicker.tsx";
 import { useContext, useEffect, useState } from "react";
-import { type Period } from "@/services/callService";
+import { type filterCallsProps, type Period } from "@/services/callService";
 import { CallContext } from "../context/CallContext.tsx";
 import {
   Select,
@@ -15,12 +15,11 @@ import settingsService from "@/services/settingsService.tsx";
 
 
 export const FilterSection = () => {
-  const { filterCalls } = useContext(CallContext)
+  const { setFilter } = useContext(CallContext)
 
   const [clearSignal, setClearSignal] = useState<number>(0);
 
   const [companyNames, setCompanyNames] = useState<string[]>([]);
-  const [selectedCompanyName, setSelectedCompanyName] = useState<string>("");
 
   useEffect(() => {
     settingsService.getCompanyNameList().then((names) => {
@@ -28,10 +27,20 @@ export const FilterSection = () => {
     });
   }, [])
 
+  const setCompanyFilter = (companyName: string) => {
+    setFilter(prev => ({
+      ...prev,
+      companyName: companyName === "all" ? undefined : companyName,
+    }));
+  }
 
-  const quickFilter = (period: Period) => {
-    const quickFilter = { period: period, companyName: selectedCompanyName === "all" ? undefined : selectedCompanyName };
-    filterCalls(quickFilter);
+  const quickFilter = (period: Period) => {;
+    setFilter(prev => ({
+      ...prev,
+      period: period,
+      startDateStr: undefined,
+      endDateStr: undefined,
+    }));
     resetFilter();
   };
 
@@ -47,12 +56,12 @@ export const FilterSection = () => {
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               <p className="font-medium text-base">Date range:</p>
-              <DateRangePicker clearSignal={clearSignal} company={selectedCompanyName === "all" ? undefined : selectedCompanyName}/>
+              <DateRangePicker clearSignal={clearSignal} />
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
               <p className="font-medium text-base">Company:</p>
-              <Select onValueChange={setSelectedCompanyName} defaultValue="all">
+              <Select onValueChange={setCompanyFilter} defaultValue="all">
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a company" />
                 </SelectTrigger>

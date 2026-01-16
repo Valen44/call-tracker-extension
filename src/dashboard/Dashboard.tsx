@@ -21,6 +21,7 @@ export const Dashboard: React.FC = () => {
     period: "today",
     startDateStr: "",
     endDateStr: "",
+    companyName: undefined,
   });
 
   const [statsHeader, setStatsHeader] = useState<EarningsCardProps>({
@@ -31,7 +32,7 @@ export const Dashboard: React.FC = () => {
 
   const [dayEarnings, setDayEarnings] = useState<DayEarnings>({});
 
-  const getCalls = async (withTable=true) => {
+  const getCalls = async (withTable = true) => {
     try {
       const [allTimeCalls, yearCalls, monthCalls, todayCalls] =
         await Promise.all([
@@ -73,9 +74,13 @@ export const Dashboard: React.FC = () => {
     setThemeFromSettings("dashboard");
   }, []);
 
+  useEffect(() => {
+    filterCalls(filter);
+  }, [filter]);
+
   return (
     <div className="p-10 transition-colors duration-200 ease-in-out">
-      <CallContext.Provider value={{ reloadTable, filterCalls }}>
+      <CallContext.Provider value={{ reloadTable, filterCalls, filter, setFilter }}>
 
         <HeaderSection />
 
