@@ -76,6 +76,7 @@ export const CallForm = ({ call, onClose, type }: CallFormProps) => {
   const onSubmit = async (values: CallFormValues) => {
     const callData: Call = {
       id: (type === "create" || !call) ? values.startTime.getTime().toString() : call.id,
+      company: call ? call.company : "Undefined",
       startTime: values.startTime.toISOString(),
       endTime: values.endTime ? values.endTime.toISOString() : undefined,
       duration: durationInSeconds ?? undefined,
@@ -105,9 +106,9 @@ export const CallForm = ({ call, onClose, type }: CallFormProps) => {
     const status = form.watch("status");
 
     if (start && end) {
-      const { duration, minutes } = callService.calculateDuration(new Date(start), new Date(end));
+      const { seconds, minutes } = dateService.calculateDuration(new Date(start), new Date(end), true);
 
-      setDurationInSeconds(duration >= 0 ? duration : null);
+      setDurationInSeconds(seconds >= 0 ? seconds : null);
       if (status !== "notServiced") {
         settingsService.loadSettings().then((s) => {
           const earnings = minutes * s.rate;

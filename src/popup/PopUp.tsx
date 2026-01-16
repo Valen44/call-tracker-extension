@@ -10,6 +10,7 @@ import { ExternalLink } from "lucide-react";
 import callService from "@/services/callService";
 import { type CallStats, type Call } from "@/types/Call";
 import setThemeFromSettings from "@/services/themeService";
+import settingsService from "@/services/settingsService";
 
 export const PopUp = () => {
 
@@ -21,25 +22,58 @@ export const PopUp = () => {
     avgCallTime: 0.0,
     avgAvailableTime: 0.0,
   })
+
+  const [companyName, setCompanyName] = useState<string | undefined>(undefined);
+  
   const [monthEarnings, setMonthEarnings] = useState<number>(0.0);
 
 
   useEffect(() => {
-    console.log("Fetching calls...")
-    callService.filterCalls({ period: "today" }).then((calls) => {
-      calls.reverse();
-      setCalls(calls);
-      const stats = callService.calculateStats(calls);
-      setStats(stats);
-    });
 
-    callService.filterCalls({ period: "month" }).then((calls) => {
-      const monthEarnings = callService.calculateStats(calls).totalEarnings;
-      setMonthEarnings(monthEarnings);
-    })
+    function getActiveTabUrl(): Promise<string | undefined> {
+      return new Promise(resolve => {
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+          resolve(tabs[0]?.url);
+        });
+      });
+    }
 
-    setThemeFromSettings("popup")
+    async function loadData() {
+      console.log("Fetching calls...");
+
+      // Getting config
+      const link = await getActiveTabUrl();
+      const config = await settingsService.getPortalConfig(link || "");
+      const companyName = config?.companyName;
+      setCompanyName(companyName);
+
+
+      // Today calls
+      const todayCalls = await callService.filterCalls({
+        period: "today",
+        companyName,
+      });
+
+      todayCalls.reverse();
+      setCalls(todayCalls);
+      setStats(callService.calculateStats(todayCalls));
+
+      // Month calls
+      const monthCalls = await callService.filterCalls({
+        period: "month",
+        companyName,
+      });
+
+      setMonthEarnings(
+        callService.calculateStats(monthCalls).totalEarnings
+      );
+
+      setThemeFromSettings("popup");
+    }
+
+    loadData().catch(console.error);
   }, []);
+
 
   const [calls, setCalls] = useState<Call[]>([])
 
@@ -60,7 +94,7 @@ export const PopUp = () => {
 
       <StatsCard stats={stats} monthEarnings={monthEarnings} />
 
-      <CallsCard calls={calls} />
+      <CallsCard calls={calls} companyName={companyName} />
 
       <div className="flex justify-center gap-2">
         <Button onClick={() => openDashboard()}><ExternalLink /> Dashboard</Button>
