@@ -1,4 +1,5 @@
 export interface Company {
+  enabled: boolean
   companyName: string;
   payRate: number;
   color: string;

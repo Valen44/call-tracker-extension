@@ -1,5 +1,6 @@
 [
     {
+        "enabled": true,
         "companyName": "Test",
         "payRate": 0.15,
         "color": "#4caf50",
@@ -34,6 +35,7 @@
         }
     },
     {
+        "enabled": true,
         "companyName": "LSA",
         "payRate": 0.15,
         "color": "#9e0d0d",
@@ -68,6 +70,7 @@
         }
     },
     {
+        "enabled": true,
         "companyName": "Propio",
         "payRate": 0.15,
         "color": "#15139c",

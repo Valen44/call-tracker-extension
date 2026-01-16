@@ -32,7 +32,7 @@ import { SortingSelectorButton } from "./SortingSelectorButton";
 import { CallContext } from "@/dashboard/context/CallContext";
 import callService from "@/services/callService";
 import { DeleteDialog } from "../DeleteDialog";
-
+import type { Company } from "@/types/Company";
 
 export const SettingsMenu = () => {
   const [dashboardTheme, setDashboardTheme] = useState<Appearence>(
@@ -41,10 +41,11 @@ export const SettingsMenu = () => {
   const [popupTheme, setPopupTheme] = useState<Appearence>(
     defaultSettings.appearence.popup
   );
-  const [rate, setRate] = useState<number>(defaultSettings.rate);
   const [callSorting, setCallSorting] = useState<"asc" | "desc">(
     defaultSettings.callSorting
   );
+
+  const [portalConfig, setPortalConfig] = useState<Company[]>([]);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
@@ -54,14 +55,16 @@ export const SettingsMenu = () => {
     settingsService.loadSettings().then((settings) => {
       setDashboardTheme(settings.appearence.dashboard);
       setPopupTheme(settings.appearence.popup);
-      setRate(settings.rate);
       setCallSorting(settings.callSorting);
+    });
+
+    settingsService.loadPortalsConfig().then((config) => {
+      setPortalConfig(config);
     });
   }, [openSettings]);
 
   const handleSubmit = async () => {
     const settings: ExtensionSettings = {
-      rate: rate,
       appearence: {
         dashboard: dashboardTheme,
         popup: popupTheme,
@@ -71,13 +74,14 @@ export const SettingsMenu = () => {
 
     try {
       await settingsService.saveSettings(settings);
+      await settingsService.savePortalsConfig(portalConfig);
       toast.success("Settings saved!");
     } catch (error) {
       toast.error("Error while saving settings");
       console.error("Error while saving settings", error);
     }
 
-    await settingsService.saveSettings(settings);
+    //await settingsService.saveSettings(settings);
     await setThemeFromSettings("dashboard");
     window.dispatchEvent(new CustomEvent("settingsUpdated"));
   };
@@ -156,35 +160,69 @@ export const SettingsMenu = () => {
           <SheetDescription></SheetDescription>
 
           <div className="flex flex-col justify-between h-full">
-            <section>
-              <div className="px-4 flex justify-between gap-6 mb-3">
-                <Label className="text-nowrap">Rate per minute</Label>
-                <div className="w-[45%]">
-                  <NumberInput
-                    suffix=" USD"
-                    prefix="$"
-                    min={0.01}
-                    max={1}
-                    stepper={0.01}
-                    decimalScale={2}
-                    defaultValue={rate}
-                    onValueChange={(e) => e && setRate(e)}
-                  ></NumberInput>
+            <div className="space-y-6">
+              <section>
+                <div className="px-4 flex justify-between gap-6 mb-3">
+                  <Label className="text-nowrap">Dashboard theme</Label>
+                  <ThemeSelectorButton valueState={[dashboardTheme, setDashboardTheme]} />
                 </div>
-              </div>
-              <div className="px-4 flex justify-between gap-6 mb-3">
-                <Label className="text-nowrap">Dashboard theme</Label>
-                <ThemeSelectorButton valueState={[dashboardTheme, setDashboardTheme]} />
-              </div>
-              <div className="px-4 flex justify-between gap-6 mb-3">
-                <Label className="text-nowrap">Popup theme</Label>
-                <ThemeSelectorButton valueState={[popupTheme, setPopupTheme]} />
-              </div>
-              <div className="px-4 flex justify-between gap-6 mb-3">
-                <Label className="text-nowrap">Call Sorting by Start Time</Label>
-                <SortingSelectorButton valueState={[callSorting, setCallSorting]} />
-              </div>
-            </section>
+                <div className="px-4 flex justify-between gap-6 mb-3">
+                  <Label className="text-nowrap">Popup theme</Label>
+                  <ThemeSelectorButton valueState={[popupTheme, setPopupTheme]} />
+                </div>
+                <div className="px-4 flex justify-between gap-6 mb-3">
+                  <Label className="text-nowrap">Call Sorting by Start Time</Label>
+                  <SortingSelectorButton valueState={[callSorting, setCallSorting]} />
+                </div>
+              </section>
+
+              <section>
+                <Collapsible className="px-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <h1 className="text-lg font-semibold">Portal Config</h1>
+                    <CollapsibleTrigger>
+                      <Button variant="ghost" size="icon" className="size-8">
+                        <ChevronsUpDown />
+                        <span className="sr-only">Toggle</span>
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <CollapsibleContent>
+
+                    {portalConfig.map((company, index) => (
+
+                      <div className="px-4 flex justify-between gap-6 mb-3">
+                        <Label className="text-nowrap">{company.companyName} rate</Label>
+                        <div className="w-[50%]">
+                          <NumberInput
+                            suffix=" USD"
+                            prefix="$"
+                            min={0.01}
+                            max={1}
+                            stepper={0.01}
+                            decimalScale={2}
+                            defaultValue={company.payRate}
+                            onValueChange={(e) => e && setPortalConfig(prev => {
+                              {
+                                const newConfig = [...prev];
+                                newConfig[index] = {
+                                  ...newConfig[index],
+                                  payRate: e,
+                                };
+                                return newConfig;
+                              }
+                            })}
+                          ></NumberInput>
+                        </div>
+                      </div>
+                    ))}
+
+                  </CollapsibleContent>
+                </Collapsible>
+              </section>
+
+            </div>
+
 
             <Collapsible className="px-4">
               <div className="flex items-center justify-between gap-4">

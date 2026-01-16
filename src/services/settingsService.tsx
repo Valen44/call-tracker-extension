@@ -3,7 +3,6 @@ import { type Company } from "@/types/Company";
 export type Appearence = "dark" | "light" | "device";
 
 export type ExtensionSettings = {
-  rate: number;
   appearence: {
     dashboard: Appearence;
     popup: Appearence;
@@ -13,7 +12,6 @@ export type ExtensionSettings = {
 
 export 
 const defaultSettings: ExtensionSettings = {
-  rate: 0.15,
   appearence: {
     dashboard: "device",
     popup: "device",
@@ -35,17 +33,20 @@ const loadSettings = async (): Promise<ExtensionSettings> => {
 };
 
 
-async function getPortalData(): Promise<Company[]> {
+async function loadPortalsConfig() : Promise<Company[]> {
+  const stored = await chrome.storage.local.get("portalsConfig");
+  if (stored.portalsConfig) return stored.portalsConfig;
 
-  const portalResponse = await fetch(chrome.runtime.getURL("config/portals.json"));
-  const portalData: Company[] = await portalResponse.json();
+  const res = await fetch(chrome.runtime.getURL("config/portals.json"));
+  const json = await res.json();
 
-  return portalData;
+  await chrome.storage.local.set({ portalsConfig: json });
+  return json;
 }
 
 async function getPortalConfig(link: string): Promise<Company | undefined> {
 
-  const portalData = await getPortalData();
+  const portalData = await loadPortalsConfig();
 
   return portalData.find((company: Company) =>
     link.startsWith(company.portalConfig.portalLink)
@@ -54,7 +55,7 @@ async function getPortalConfig(link: string): Promise<Company | undefined> {
 
 async function getCompanyColorMap(): Promise<Record<string, string>> {
 
-  const portalData = await getPortalData();
+  const portalData = await loadPortalsConfig();
 
   return portalData.reduce((acc, company) => {
     acc[company.companyName] = company.color;
@@ -64,9 +65,13 @@ async function getCompanyColorMap(): Promise<Record<string, string>> {
 
 async function getCompanyNameList(): Promise<string[]> {
 
-  const portalData = await getPortalData();
+  const portalData = await loadPortalsConfig();
 
   return portalData.map((company) => company.companyName);
 }
 
-export default { saveSettings, getSettings, loadSettings, getPortalConfig, getCompanyColorMap, getCompanyNameList}
+async function savePortalsConfig(portalConfig: Company[]): Promise<void> {
+  await chrome.storage.local.set({ portalsConfig: portalConfig });
+};
+
+export default { saveSettings, getSettings, loadSettings, getPortalConfig, getCompanyColorMap, getCompanyNameList, loadPortalsConfig, savePortalsConfig}
