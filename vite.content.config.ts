@@ -6,8 +6,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         content: resolve(__dirname, 'src/content/content.ts'),
-        background: resolve(__dirname, 'src/background/background.ts'),
-        themeDetector: resolve(__dirname, 'src/content/themeDetector.ts'),
+        background: resolve(__dirname, 'src/background/background.ts')
+        //themeDetector: resolve(__dirname, 'src/content/themeDetector.ts'),
       },
       output: {
         entryFileNames: '[name].js',

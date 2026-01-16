@@ -11,3 +11,11 @@ chrome.runtime.onMessage.addListener((message) => {
     }
   })
 })
+
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.type === "SET_BADGE") {
+    chrome.action.setBadgeBackgroundColor({ color: msg.color });
+    chrome.action.setBadgeText({ text: msg.text });
+  }
+});

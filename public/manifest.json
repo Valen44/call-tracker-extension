@@ -15,11 +15,11 @@
     {
       "matches": [
         "https://agent.lsaweb.com/agent",
-        "https://valen44.github.io/*"
+        "https://valen44.github.io/*",
+        "https://google.com/*"
       ],
       "js": [
-        "./assets/content.js",
-        "./assets/themeDetector.js"
+        "./assets/content.js"
       ],
       "run_at": "document_idle"
     }
@@ -32,7 +32,8 @@
       "resources": [
         "./dashboard/dashboard.html",
         "./dashboard/dashboard.js",
-        "./dashboard/dashboard.css"
+        "./dashboard/dashboard.css",
+        "config/portals.json"
       ],
       "matches": [
         "<all_urls>"
