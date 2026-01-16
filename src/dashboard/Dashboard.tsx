@@ -91,7 +91,7 @@ export const Dashboard: React.FC = () => {
         <section className="flex gap-6 flex-wrap min-[1150px]:flex-nowrap justify-center min-[1150px]:justify-between">
           <CallsSection calls={filteredCalls} />
 
-          <CalendarSection dayEarnings={dayEarnings} />
+          <CalendarSection filteredCalls={filteredCalls} />
         </section>
 
       </CallContext.Provider>

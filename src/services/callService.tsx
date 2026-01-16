@@ -72,7 +72,7 @@ const filterCalls = async (filter : filterCallsProps): Promise<Call[]> => {
     else if (period === "year")
         ({ startDate, endDate } = dateUtils.getYearBoundaries());
     else if (period === "allTime")
-        return allCalls
+        return allCalls.filter((call) => companyName ? call.company === companyName : true);
     else if (period === "custom" && startDateStr && endDateStr)
     ({ startDate, endDate } = dateUtils.getDateBoundaries(startDateStr, endDateStr));
 
