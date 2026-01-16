@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CallContext } from "./context/CallContext.tsx";
 
 import { type filterCallsProps } from "@/services/callService.tsx";
-import { type Call, type DayEarnings } from "@/types/Call.tsx";
+import { type Call } from "@/types/Call.tsx";
 import { CalendarSection } from "./sections/CalendarSection.tsx";
 import { CallsSection } from "./sections/CallsSection.tsx";
 import {
@@ -30,8 +30,6 @@ export const Dashboard: React.FC = () => {
     year: 0,
   });
 
-  const [dayEarnings, setDayEarnings] = useState<DayEarnings>({});
-
   const getCalls = async (withTable = true) => {
     try {
       const [allTimeCalls, yearCalls, monthCalls, todayCalls] =
@@ -51,9 +49,6 @@ export const Dashboard: React.FC = () => {
       };
 
       setStatsHeader(updatedStats);
-
-      const dayEarnings = callService.calculateDayEarnings(allTimeCalls);
-      setDayEarnings(dayEarnings);
     } catch (error) {
       console.error("Error loading call data:", error);
     }
