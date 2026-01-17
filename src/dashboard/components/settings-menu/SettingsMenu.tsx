@@ -32,7 +32,9 @@ import { SortingSelectorButton } from "./SortingSelectorButton";
 import { CallContext } from "@/dashboard/context/CallContext";
 import callService from "@/services/callService";
 import { DeleteDialog } from "../DeleteDialog";
-import type { Company } from "@/types/Company";
+import { CompanyArraySchema, type Company } from "@/types/Company";
+import { CallArraySchema } from "@/types/Call";
+import { ZodError } from "zod";
 
 export const SettingsMenu = () => {
   const [dashboardTheme, setDashboardTheme] = useState<Appearence>(
@@ -46,6 +48,7 @@ export const SettingsMenu = () => {
   );
 
   const [portalConfig, setPortalConfig] = useState<Company[]>([]);
+  const [reloadRateInputs, setReloadRateInputs] = useState<boolean>(true);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
@@ -86,7 +89,7 @@ export const SettingsMenu = () => {
     window.dispatchEvent(new CustomEvent("settingsUpdated"));
   };
 
-  const handleBackup = async () => {
+  const handleBackupCalls = async () => {
     try {
       const callsToBackup = await callService.exportCalls();
       const blob = new Blob([JSON.stringify(callsToBackup)], { type: 'application/json' });
@@ -103,14 +106,14 @@ export const SettingsMenu = () => {
     }
   };
 
-  const handleRestore = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRestoreCalls = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        const callsToImport = JSON.parse(e.target?.result as string);
+        const callsToImport = CallArraySchema.parse(JSON.parse(e.target?.result as string));
         const { skippedCount, totalCallsToImport } = await callService.importCalls(callsToImport);
 
         if (skippedCount === totalCallsToImport) {
@@ -124,12 +127,51 @@ export const SettingsMenu = () => {
         reloadTable();
 
       } catch (error) {
-        toast.error("Error while restoring calls");
-        console.error("Error while restoring calls", error);
+        if (error instanceof ZodError) {
+          toast.error("Invalid backup file format");
+          console.warn("Zod validation errors:", error.issues);
+        } else {
+          toast.error("Error while restoring calls");
+          console.warn(error);
+        }
       }
     };
     reader.readAsText(file);
   };
+
+  const handleImportPortalConfig = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const configToImport = CompanyArraySchema.parse(JSON.parse(e.target?.result as string));
+
+        await settingsService.savePortalsConfig(configToImport);
+        setPortalConfig(configToImport);
+
+        toast.success("Portal config imported successfully!");
+
+        setReloadRateInputs(false);
+        setTimeout(() => setReloadRateInputs(true), 1);
+
+        reloadTable();
+
+      } catch (error) {
+        if (error instanceof ZodError) {
+          toast.error("Invalid backup file format");
+          console.warn("Zod validation errors:", error.issues);
+        } else {
+          toast.error("Error while importing config");
+          console.warn(error);
+        }
+      }
+    };
+    reader.readAsText(file);
+  };
+
+
 
   const handleDeleteAllCalls = async () => {
     try {
@@ -189,7 +231,15 @@ export const SettingsMenu = () => {
                   </div>
                   <CollapsibleContent>
 
-                    {portalConfig.map((company, index) => (
+                    <div className="px-4 flex justify-between gap-6 mb-2 items-center">
+                      <Label className="text-nowrap">Import Portal Config</Label>
+                      <input type="file" accept=".json" onChange={handleImportPortalConfig} className="hidden" id="restore-button" />
+                      <Label htmlFor="restore-button" className="cursor-pointer px-4 py-2 border border-input bg-background hover:bg-accent  dark:bg-input/30 dark:border-input dark:hover:bg-input/50 hover:text-accent-foreground inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                        Import
+                      </Label>
+                    </div>
+
+                    { reloadRateInputs && portalConfig.map((company, index) => (
 
                       <div className="px-4 flex justify-between gap-6 mb-3">
                         <Label className="text-nowrap">{company.companyName} rate</Label>
@@ -237,13 +287,13 @@ export const SettingsMenu = () => {
               <CollapsibleContent>
                 <div className="px-4 flex justify-between gap-6 mb-2 mt-2 items-center">
                   <Label className="text-nowrap">Backup Calls</Label>
-                  <Button variant="outline" onClick={handleBackup} >
+                  <Button variant="outline" onClick={handleBackupCalls} >
                     Backup
                   </Button>
                 </div>
                 <div className="px-4 flex justify-between gap-6 mb-2 items-center">
                   <Label className="text-nowrap">Restore Calls</Label>
-                  <input type="file" accept=".json" onChange={handleRestore} className="hidden" id="restore-button" />
+                  <input type="file" accept=".json" onChange={handleRestoreCalls} className="hidden" id="restore-button" />
                   <Label htmlFor="restore-button" className="cursor-pointer px-4 py-2 border border-input bg-background hover:bg-accent  dark:bg-input/30 dark:border-input dark:hover:bg-input/50 hover:text-accent-foreground inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                     Restore
                   </Label>
