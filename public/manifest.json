@@ -16,7 +16,7 @@
       "matches": [
         "https://agent.lsaweb.com/agent",
         "https://valen44.github.io/*",
-        "https://google.com/*"
+        "https://interpreters.propio-ls.com/portal"
       ],
       "js": [
         "./assets/content.js"
