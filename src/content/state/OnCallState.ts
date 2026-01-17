@@ -7,7 +7,6 @@ import { UnavailableState } from "./UnavailableState.ts";
 import callService from "@/services/callService";
 import dateUtils from "@/services/dateService";
 import { InvalidState } from "./InvalidState.ts";
-import statsDisplay from "../statsDisplay.ts";
 
 export class OnCallState extends BaseState {
   name = "ON_CALL";
@@ -37,7 +36,7 @@ export class OnCallState extends BaseState {
     this.callSavingIntervalID = window.setInterval(() => {
       this.saveCallProgress(false);
       console.log("Call progress saved");
-      statsDisplay.updateStats();
+      this.manager.updateWidgetStats();
     }, 60000);
 
   }

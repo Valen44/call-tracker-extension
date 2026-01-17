@@ -1,4 +1,4 @@
-import statsDisplay from "../statsDisplay.ts";
+import type { StatsDisplay } from "../statsDisplay.ts";
 import { type AgentState } from "./AgentState.ts";
 import { UnavailableState } from "./UnavailableState.ts";
 
@@ -23,14 +23,16 @@ export class StateManager {
   private currentState!: AgentState;
 
   private observer?: MutationObserver;
+  private widget: StatsDisplay;
 
   private timer = 0;
   private interval?: number;
 
   public config: Config;
 
-  constructor(config: Config) {
+  constructor(config: Config, widget: StatsDisplay) {
     this.config = config;
+    this.widget = widget;
   }
 
   start() {
@@ -92,14 +94,18 @@ export class StateManager {
     const el = document.querySelector(".tracker");
     if (!el) return;
 
-    statsDisplay.setStatus(this.currentState);
+    this.widget.setStatus(this.currentState);
 
-    statsDisplay.updateTimer(this.timer);
+    this.widget.updateTimer(this.timer);
 
     if (this.config.websiteTitleTimer) {
       const m = Math.floor(this.timer / 60).toString().padStart(2, "0");
       const s = (this.timer % 60).toString().padStart(2, "0");
       document.title = `(${m}:${s}) ${this.config.companyName}`;
     }
+  }
+
+  updateWidgetStats() {
+    this.widget.updateStats()
   }
 }
