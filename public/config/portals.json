@@ -3,7 +3,7 @@
         "enabled": true,
         "companyName": "LSA",
         "payRate": 0.15,
-        "color": "#c211c2",
+        "color": "#DD921E",
         "portalConfig": {
             "portalLink": "https://agent.lsaweb.com/agent",
             "selector": "#span-agentstatus-text",
@@ -33,7 +33,7 @@
         "enabled": true,
         "companyName": "Propio",
         "payRate": 0.11,
-        "color": "#15139c",
+        "color": "#5957FF",
         "portalConfig": {
             "portalLink": "https://interpreters.propio-ls.com/portal",
             "selector": ".call-status-text",

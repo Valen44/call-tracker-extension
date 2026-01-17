@@ -19,9 +19,9 @@ export const columns: ColumnDef<Call>[] = [
     cell: ({ row }) => { 
       const company = row.getValue("company") as string;
       const color = colorMap[company];
-      return <div className="pl-4" style={{ color }}>{company}</div>;
+      return <div className="pl-4 font-bold" style={{ color }}>{company}</div>;
     },
-  },
+  }, 
   {
     accessorKey: "date",
     header: ({column}) => ( <DataTableColumnHeader column={column} title="Date" className="pl-4"/> ),
