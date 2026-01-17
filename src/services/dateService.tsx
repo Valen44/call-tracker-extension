@@ -13,7 +13,7 @@ const calculateDuration = (startTime: Date, endTime: Date, rounding: boolean) =>
 
 const formatDuration = (seconds: number, full = false) => {
     if (seconds === 0 || seconds === null) {
-        return ``;
+        return `-`;
     } else if (seconds < 60) {
         return `${seconds}s`;
     } else if (seconds < 3600) {
