@@ -63,7 +63,7 @@ export class StateManager {
       this.currentState.onDOMUpdate(text);
     });
 
-    this.observer.observe(el, { childList: true, subtree: true });
+    this.observer.observe(el, { childList: true, subtree: true, characterData: true});
   };
 
   waitForElement();
