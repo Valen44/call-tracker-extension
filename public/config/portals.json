@@ -53,7 +53,7 @@
                     "Wrap Up"
                 ],
                 "unavailable": [
-                    "Offline"
+                    "Offline", "Rejected"
                 ],
                 "ringing": [
                     "Ringing"
