@@ -41,6 +41,9 @@ export class RingingState extends BaseState {
     else if (this.manager.config.keywords.unavailable.some((k: string) => text === k.toLocaleLowerCase())) {
       nextState = new UnavailableState(this.manager);
     }
+    else if (this.manager.config.keywords.ringing.some((k: string) => text === k.toLocaleLowerCase())) {
+      return;
+    }
     else {
       const nextState = new InvalidState(this.manager, this, text);
       this.manager.setState(nextState);

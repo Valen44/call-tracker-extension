@@ -58,6 +58,9 @@ export class OnCallState extends BaseState {
     else if (this.manager.config.keywords.unavailable.some((k: string) => text === k.toLocaleLowerCase())) {
       nextState = new UnavailableState(this.manager);
     }
+    else if (this.manager.config.keywords.onCall.some((k: string) => text === k.toLocaleLowerCase())) {
+      return;
+    }
     else {
       const nextState = new InvalidState(this.manager, this, text);
       this.manager.setState(nextState);
