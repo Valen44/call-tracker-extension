@@ -3,7 +3,7 @@
         "enabled": true,
         "companyName": "LSA",
         "payRate": 0.15,
-        "color": "#9e0d0d",
+        "color": "#c211c2",
         "portalConfig": {
             "portalLink": "https://agent.lsaweb.com/agent",
             "selector": "#span-agentstatus-text",
