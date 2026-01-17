@@ -28,7 +28,7 @@ export class UnavailableState extends BaseState {
       const nextState = new AvailableState(this.manager);
       this.manager.setState(nextState);
     }
-    if (this.manager.config.keywords.unavailable.some((k: string) => text === k.toLocaleLowerCase())) {
+    else if (this.manager.config.keywords.unavailable.some((k: string) => text === k.toLocaleLowerCase())) {
       return;
     }
     else {
