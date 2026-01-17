@@ -46,6 +46,7 @@ export const SettingsMenu = () => {
   const [callSorting, setCallSorting] = useState<"asc" | "desc">(
     defaultSettings.callSorting
   );
+  const [goal, setGoal] = useState<number | undefined>(undefined);
 
   const [portalConfig, setPortalConfig] = useState<Company[]>([]);
   const [reloadRateInputs, setReloadRateInputs] = useState<boolean>(true);
@@ -59,6 +60,7 @@ export const SettingsMenu = () => {
       setDashboardTheme(settings.appearence.dashboard);
       setPopupTheme(settings.appearence.popup);
       setCallSorting(settings.callSorting);
+      setGoal(settings.goal ?? undefined);
     });
 
     settingsService.loadPortalsConfig().then((config) => {
@@ -67,12 +69,16 @@ export const SettingsMenu = () => {
   }, [openSettings]);
 
   const handleSubmit = async () => {
+
+    const goalValue = goal === 0 ? undefined : goal;
+
     const settings: ExtensionSettings = {
       appearence: {
         dashboard: dashboardTheme,
         popup: popupTheme,
       },
       callSorting: callSorting,
+      goal: goalValue,
     };
 
     try {
@@ -171,8 +177,6 @@ export const SettingsMenu = () => {
     reader.readAsText(file);
   };
 
-
-
   const handleDeleteAllCalls = async () => {
     try {
       await callService.deleteAllCalls();
@@ -183,7 +187,6 @@ export const SettingsMenu = () => {
       console.error("Error while deleting calls", error);
     }
   };
-
 
   return (
     <>
@@ -216,6 +219,22 @@ export const SettingsMenu = () => {
                   <Label className="text-nowrap">Call Sorting by Start Time</Label>
                   <SortingSelectorButton valueState={[callSorting, setCallSorting]} />
                 </div>
+
+                <div className="px-4 flex justify-between gap-6 mb-3">
+                  <Label className="text-nowrap">Daily goal</Label>
+                  <div className="w-[50%]">
+                    <NumberInput
+                      suffix=" USD"
+                      prefix="$"
+                      min={0}
+                      max={500}
+                      stepper={1}
+                      decimalScale={0}
+                      defaultValue={goal ?? undefined}
+                      onValueChange={(e) => {setGoal(e)}}
+                    ></NumberInput>
+                  </div>
+                </div>
               </section>
 
               <section>
@@ -239,7 +258,7 @@ export const SettingsMenu = () => {
                       </Label>
                     </div>
 
-                    { reloadRateInputs && portalConfig.map((company, index) => (
+                    {reloadRateInputs && portalConfig.map((company, index) => (
 
                       <div className="px-4 flex justify-between gap-6 mb-3">
                         <Label className="text-nowrap">{company.companyName} rate</Label>

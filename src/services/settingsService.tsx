@@ -8,6 +8,7 @@ export type ExtensionSettings = {
     popup: Appearence;
   };
   callSorting: "asc" | "desc";
+  goal?: number;
 };
 
 export
