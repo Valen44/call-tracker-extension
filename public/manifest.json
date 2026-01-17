@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "version": "1.0.0",
   "name": "CALL TRACKER",
+
   "action": {
     "default_popup": "./src/popup/popup.html",
     "default_icon": {
@@ -11,22 +12,24 @@
       "128": "./icons/dark-icon128.png"
     }
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://agent.lsaweb.com/agent",
-        "https://valen44.github.io/*",
-        "https://interpreters.propio-ls.com/portal"
-      ],
-      "js": [
-        "./assets/content.js"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
+
   "background": {
-    "service_worker": "./assets/background.js"
+    "service_worker": "./assets/background.js",
+    "type": "module"
   },
+
+  "permissions": [
+    "scripting",
+    "tabs",
+    "storage",
+    "activeTab"
+  ],
+
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+
   "web_accessible_resources": [
     {
       "resources": [
@@ -35,20 +38,14 @@
         "./dashboard/dashboard.css",
         "config/portals.json"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
   ],
-  "permissions": [
-    "scripting",
-    "activeTab",
-    "storage"
-  ],
+
   "icons": {
-      "16": "./icons/dark-icon16.png",
-      "32": "./icons/dark-icon32.png",
-      "48": "./icons/dark-icon24.png",
-      "128": "./icons/dark-icon128.png"
-    }
+    "16": "./icons/dark-icon16.png",
+    "32": "./icons/dark-icon32.png",
+    "48": "./icons/dark-icon24.png",
+    "128": "./icons/dark-icon128.png"
+  }
 }
