@@ -50,9 +50,11 @@ export class StateManager {
 
   // ---------- DOM ----------
   private observeDOM() {
+  const waitForElement = () => {
     const el = document.querySelector(this.config.selector);
+
     if (!el) {
-      console.error("Status element not found");
+      requestAnimationFrame(waitForElement);
       return;
     }
 
@@ -62,7 +64,10 @@ export class StateManager {
     });
 
     this.observer.observe(el, { childList: true, subtree: true });
-  }
+  };
+
+  waitForElement();
+}
 
   // ---------- TIMER ----------
   startTimer() {
