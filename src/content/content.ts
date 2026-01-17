@@ -6,10 +6,7 @@ async function init(): Promise<void> {
   const link = window.location.href;
   const config = await settingsService.getPortalConfig(link);
 
-  if (!config) {
-    console.warn(`No configuration found for current website`);
-  }
-  else {
+  if (config) {
     const portalConfig = config.portalConfig;
 
     const manager = new StateManager({
