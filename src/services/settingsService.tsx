@@ -10,14 +10,14 @@ export type ExtensionSettings = {
   callSorting: "asc" | "desc";
 };
 
-export 
-const defaultSettings: ExtensionSettings = {
-  appearence: {
-    dashboard: "device",
-    popup: "device",
-  },
-  callSorting: "desc",
-};
+export
+  const defaultSettings: ExtensionSettings = {
+    appearence: {
+      dashboard: "device",
+      popup: "device",
+    },
+    callSorting: "desc",
+  };
 
 const saveSettings = async (settings: ExtensionSettings): Promise<void> => {
   await chrome.storage.local.set({ extensionSettings: settings });
@@ -33,7 +33,7 @@ const loadSettings = async (): Promise<ExtensionSettings> => {
 };
 
 
-async function loadPortalsConfig() : Promise<Company[]> {
+async function loadPortalsConfig(): Promise<Company[]> {
   const stored = await chrome.storage.local.get("portalsConfig");
   if (stored.portalsConfig) return stored.portalsConfig;
 
@@ -51,6 +51,17 @@ async function getPortalConfig(link: string): Promise<Company | undefined> {
   return portalData.find((company: Company) =>
     link.startsWith(company.portalConfig.portalLink)
   );
+}
+
+async function getPortalRate(name: string): Promise<{ rate: number , rounding: boolean }> {
+
+  const portalData = await loadPortalsConfig();
+
+  const rate = portalData.find((company: Company) => name === company.companyName)?.payRate ?? 0;
+
+  const rounding = portalData.find((company: Company) => name === company.companyName)?.portalConfig.rounding ?? false;
+
+  return { rate, rounding };
 }
 
 async function getCompanyColorMap(): Promise<Record<string, string>> {
@@ -74,4 +85,14 @@ async function savePortalsConfig(portalConfig: Company[]): Promise<void> {
   await chrome.storage.local.set({ portalsConfig: portalConfig });
 };
 
-export default { saveSettings, getSettings, loadSettings, getPortalConfig, getCompanyColorMap, getCompanyNameList, loadPortalsConfig, savePortalsConfig}
+export default {
+  saveSettings,
+  getSettings,
+  loadSettings,
+  getPortalConfig,
+  getCompanyColorMap,
+  getCompanyNameList,
+  loadPortalsConfig,
+  savePortalsConfig,
+  getPortalRate
+}

@@ -24,6 +24,7 @@ import { CallContext } from "@/dashboard/context/CallContext";
 
 const callSchema = z
   .object({
+    company: z.string({ message: "Company is required" }),
     startTime: z.date({ message: "You must choose a start time" }),
     endTime: z.date().optional(),
     duration: z.number().optional(),
@@ -59,13 +60,14 @@ interface CallFormProps {
 export const CallForm = ({ call, onClose, type }: CallFormProps) => {
   const { reloadTable } = useContext(CallContext);
 
-  const defaultValues = call 
+  const defaultValues = call
     ? {
-        startTime: new Date(call.startTime),
-        endTime: call.endTime ? new Date(call.endTime) : undefined,
-        available: call.available ? call.available : undefined,
-        status: call.status
-      }
+      company: call.company,
+      startTime: new Date(call.startTime),
+      endTime: call.endTime ? new Date(call.endTime) : undefined,
+      available: call.available ? call.available : undefined,
+      status: call.status
+    }
     : undefined;
 
   const form = useForm<CallFormValues>({
@@ -76,7 +78,7 @@ export const CallForm = ({ call, onClose, type }: CallFormProps) => {
   const onSubmit = async (values: CallFormValues) => {
     const callData: Call = {
       id: (type === "create" || !call) ? values.startTime.getTime().toString() : call.id,
-      company: call ? call.company : "Undefined",
+      company: values.company,
       startTime: values.startTime.toISOString(),
       endTime: values.endTime ? values.endTime.toISOString() : undefined,
       duration: durationInSeconds ?? undefined,
@@ -100,31 +102,75 @@ export const CallForm = ({ call, onClose, type }: CallFormProps) => {
   const [durationInSeconds, setDurationInSeconds] = useState<number | null>(null);
   const [earnings, setEarnings] = useState<number | null>(null);
 
+  const [companyList, setCompanyList] = useState<string[]>([]);
+  const [company, setCompany] = useState<string>(call ? call.company : "");
+
+  useEffect(() => {
+    settingsService.getCompanyNameList().then((names) => {
+      setCompanyList(names);
+    });
+  }, [])
+
   useEffect(() => {
     const start = form.watch("startTime");
     const end = form.watch("endTime");
     const status = form.watch("status");
 
-    if (start && end) {
-      const { seconds, minutes } = dateService.calculateDuration(new Date(start), new Date(end), true);
+    settingsService.getPortalRate(company).then((rateData) => {
 
-      setDurationInSeconds(seconds >= 0 ? seconds : null);
-      if (status !== "notServiced") {
-        settingsService.loadSettings().then((s) => {
-          const earnings = minutes * s.rate;
+      const rate = rateData.rate;
+      const rounding = rateData.rounding;
+
+      if (start && end) {
+        const { seconds, minutes } = dateService.calculateDuration(new Date(start), new Date(end), rounding);
+
+        setDurationInSeconds(seconds >= 0 ? seconds : null);
+        if (status !== "notServiced") {
+          const earnings = minutes * (rate ?? 0);
           setEarnings(parseFloat(earnings.toFixed(2)));
-        })
-      } else setEarnings(0);
-    } else {
-      setDurationInSeconds(null);
-      setEarnings(null);
-    }
+        } else setEarnings(0);
+      } else {
+        setDurationInSeconds(null);
+        setEarnings(null);
+      }
 
-  }, [form.watch("startTime"), form.watch("endTime"), form.watch("status")]);
+    });
+
+    
+
+  }, [form.watch("startTime"), form.watch("endTime"), form.watch("status"), form.watch("company")]);
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
+        <FormField
+          control={form.control}
+          name="company"
+          render={({ field }) => (
+            <FormItem className="flex mb-5 justify-between items-center">
+              <FormLabel>Company</FormLabel>
+              <FormControl>
+
+                <Select onValueChange={(value) => {
+                  field.onChange(value)
+                  setCompany(value);
+                }} defaultValue={call?.company}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a company" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {companyList.map((name) => (
+                      <SelectItem key={name} value={name} >{name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="startTime"
@@ -228,7 +274,7 @@ export const CallForm = ({ call, onClose, type }: CallFormProps) => {
                 <FormControl>
                   <Select
                     defaultValue={field.value}
-                    onValueChange={(value) => 
+                    onValueChange={(value) =>
                       field.onChange(value ?? undefined)}
                   >
                     <SelectTrigger className="w-[180px]">
