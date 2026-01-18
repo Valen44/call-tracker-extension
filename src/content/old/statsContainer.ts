@@ -1,7 +1,7 @@
 const HTML = `
   <div id="tracker" class="tracker">
     <div id="tracker-header" style="background-color: #630404;">
-      <p id="tracker-title">Call Tracker</p>
+      <p>Call Tracker</p>
       <p id="tracker-timer" class="tracker-timer"></p>
     </div>
     <div id="stats" class="">
@@ -61,6 +61,26 @@ const CSS = `
   display: flex;
   justify-content: space-evenly;
   padding: 10px;
+}
+
+.status-unavailable {
+  background-color: rgb(99, 4, 4);
+}
+
+.status-available {
+  background-color: #2f6304;
+}
+
+.status-oncall {
+  background-color: #9035e5ff;
+}
+
+.status-acw {
+  background-color: #FF9800;
+}
+
+.status-ringing {
+  background-color: #0d00ffff;
 }
 
 .stat {

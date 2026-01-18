@@ -1,12 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 import dateUtils from "../../services/dateService";
-import { type DayEarnings } from "@/types/Call";
+import { type Call, type DayEarnings } from "@/types/Call";
+import callService from "@/services/callService";
+
+
 export const CalendarSection = ({
-  dayEarnings,
+  filteredCalls,
 }: {
-  dayEarnings: DayEarnings;
+  filteredCalls: Call[];
 }) => {
+
+  const dayEarnings: DayEarnings = callService.calculateDayEarnings(filteredCalls);
+
   return (
     <div className="w-full min-[1150px]:w-min flex justify-center">
       <div className="w-full">

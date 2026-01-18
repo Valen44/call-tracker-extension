@@ -19,24 +19,26 @@ export type DateRangeRef = {
   clearPicker: () => void;
 };
 
-export default function DateRangePicker({clearSignal} : {clearSignal : number}) {
+export default function DateRangePicker({ clearSignal }: { clearSignal: number }) {
 
-   const {filterCalls} = React.useContext(CallContext)
+  const { filterCalls, setFilter } = React.useContext(CallContext)
 
   const [range, setRange] = React.useState<DateRange | undefined>(undefined)
 
   const sendRange = (range: DateRange | undefined) => {
     setRange(range);
 
-    if (range?.from && range?.to) {
-      const filter: filterCallsProps = {
-        period: "custom",
-        startDateStr: dateService.formatDate(range.from.toISOString()),
-        endDateStr: dateService.formatDate(range.to.toISOString())
-      };
-      filterCalls(filter);
-    }
-  }
+    if (!range?.from || !range?.to) return;
+
+    const { from, to } = range;
+
+    setFilter(prev => ({
+      ...prev,
+      period: "custom",
+      startDateStr: dateService.formatDate(from.toISOString()),
+      endDateStr: dateService.formatDate(to.toISOString()),
+    }));
+  };
 
   React.useEffect(() => {
     setRange(undefined);

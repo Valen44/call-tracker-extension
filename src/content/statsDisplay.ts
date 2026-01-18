@@ -1,104 +1,121 @@
 import statsContainer from "./statsContainer";
 import dateService from "@/services/dateService";
 import callService from "@/services/callService";
+import type { AgentState } from "./state/AgentState";
 
-const createStatsDisplay = () => {
+export class StatsDisplay {
+  private companyName: string;
+  private tracker: HTMLElement | null = null;
+
+  private isDragging = false;
+  private offsetX = 0;
+  private offsetY = 0;
+
+  constructor(companyName: string) {
+    this.companyName = companyName;
+  }
+
+  // =========================
+  // INIT / CREATE
+  // =========================
+  create() {
     const style = document.createElement("style");
     style.textContent = statsContainer.CSS;
-
     document.body.appendChild(style);
+
     document.body.insertAdjacentHTML("beforeend", statsContainer.HTML);
 
-    // Drag logic
-    const tracker = document.getElementById("tracker");
+    this.tracker = document.getElementById("tracker");
 
-    let isDragging = false;
-    let offsetX: number, offsetY: number;
+    this.attachDragHandlers();
+    this.updateStats();
+  }
 
-    tracker?.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        offsetX = e.clientX - tracker.getBoundingClientRect().left;
-        offsetY = e.clientY - tracker.getBoundingClientRect().top;
-        tracker.style.transition = "none";
+  // =========================
+  // DRAG LOGIC
+  // =========================
+  private attachDragHandlers() {
+    if (!this.tracker) return;
+
+    this.tracker.addEventListener("mousedown", (e) => {
+      this.isDragging = true;
+      this.offsetX = e.clientX - this.tracker!.getBoundingClientRect().left;
+      this.offsetY = e.clientY - this.tracker!.getBoundingClientRect().top;
+      this.tracker!.style.transition = "none";
     });
 
     document.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-            const x = e.clientX - offsetX;
-            const y = e.clientY - offsetY;
-            if (tracker) {
-                tracker.style.left = `${x}px`;
-                tracker.style.top = `${y}px`;
-            }
-        }
+      if (!this.isDragging || !this.tracker) return;
+
+      const x = e.clientX - this.offsetX;
+      const y = e.clientY - this.offsetY;
+
+      this.tracker.style.left = `${x}px`;
+      this.tracker.style.top = `${y}px`;
     });
 
     document.addEventListener("mouseup", () => {
-        isDragging = false;
+      this.isDragging = false;
     });
+  }
 
-    updateStats()
-}
-
-const updateStats = async () => {
-    const callsToday = await callService.filterCalls({ period: "today" });
+  // =========================
+  // STATS
+  // =========================
+  async updateStats() {
+    const callsToday = await callService.filterCalls({
+      period: "today",
+      companyName: this.companyName,
+    });
 
     const statsToday = callService.calculateStats(callsToday);
 
-    const totalCallsEl = document.getElementById('total-calls');
-    const todayEarningsEl = document.getElementById('today-earnings');
-    const inCallTimeEl = document.getElementById('in-call-time');
-    const hourlyRateEl = document.getElementById('hourly-rate');
-    const avgAvailEl = document.getElementById('avg-avail');
+    this.setText("total-calls", `${statsToday.totalCalls || 0}`);
+    this.setText(
+      "today-earnings",
+      `$${statsToday.totalEarnings.toFixed(2) || 0}`
+    );
+    this.setText(
+      "in-call-time",
+      dateService.formatDuration(statsToday.totalTime || 0)
+    );
+    this.setText(
+      "hourly-rate",
+      `$${statsToday.avgHourlyRate.toFixed(2) || 0}`
+    );
+    this.setText(
+      "avg-avail",
+      dateService.formatDuration(statsToday.avgAvailableTime || 0)
+    );
+  }
 
-    if (totalCallsEl) {
-        totalCallsEl.textContent = `${statsToday.totalCalls || 0}`;
-    }
-    if (todayEarningsEl) {
-        todayEarningsEl.textContent = `$${statsToday.totalEarnings.toFixed(2) || 0}`;
-    }
-    if (inCallTimeEl) {
-        inCallTimeEl.textContent = `${dateService.formatDuration(statsToday.totalTime || 0)}`;
-    }
-    if (hourlyRateEl) {
-        hourlyRateEl.textContent = `$${statsToday.avgHourlyRate.toFixed(2) || 0}`;
-    }
-    if (avgAvailEl) {
-        avgAvailEl.textContent = `${dateService.formatDuration(statsToday.avgAvailableTime || 0)}`;
-    }
+  private setText(id: string, value: string) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
 
-}
-
-const updateTimer = (startTime: number) => {
+  // =========================
+  // TIMER
+  // =========================
+  updateTimer(seconds: number) {
     const timerElement = document.getElementById("tracker-timer");
-    const ms = Date.now() - startTime;
-    const totalSeconds = Math.floor(ms / 1000);
-    const timerStr = dateService.formatDuration(totalSeconds, true);
-    if (timerElement) timerElement.textContent = timerStr;
+    if (!timerElement) return;
 
+    timerElement.textContent =
+      seconds === 0 ? "" : dateService.formatDuration(seconds, true);
+  }
+
+  // =========================
+  // STATUS
+  // =========================
+  setStatus(status: AgentState) {
+    const headerEl = document.getElementById("tracker-header");
+    const titleEl = document.getElementById("tracker-title");
+    if (!headerEl || !titleEl) return;
+
+    headerEl.style.backgroundColor = status.color;
+    titleEl.textContent = "Call Tracker - " + status.name.toUpperCase();
+
+    this.updateStats();
+  }
 }
-
-
-const stopTimer = () => {
-    const timerElement = document.getElementById("tracker-timer");
-    if (timerElement) timerElement.textContent = "";
-}
-
-const setStatus = (status: "available" | "oncall" | "unavailable") => {
-    const headerEl = document.getElementById("tracker-header")
-    if (headerEl === null) return;
-
-    switch (status) {
-        case "available":
-            headerEl.className = "status-available";
-            break;
-        case "oncall":
-            headerEl.className = "status-oncall";
-            break;
-        case "unavailable":
-            headerEl.className = "status-unavailable";
-            break;
-    }
-}
-
-export default { createStatsDisplay, updateStats, stopTimer, setStatus, updateTimer }

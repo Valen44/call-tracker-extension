@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CallContext } from "./context/CallContext.tsx";
 
 import { type filterCallsProps } from "@/services/callService.tsx";
-import { type Call, type DayEarnings } from "@/types/Call.tsx";
+import { type Call } from "@/types/Call.tsx";
 import { CalendarSection } from "./sections/CalendarSection.tsx";
 import { CallsSection } from "./sections/CallsSection.tsx";
 import {
@@ -17,10 +17,12 @@ import setThemeFromSettings from "@/services/themeService.tsx";
 
 export const Dashboard: React.FC = () => {
   const [filteredCalls, setFilteredCalls] = useState<Call[]>([]);
+  const [calendarCalls, setCalendarCalls] = useState<Call[]>([]);
   const [filter, setFilter] = useState<filterCallsProps>({
     period: "today",
     startDateStr: "",
     endDateStr: "",
+    companyName: undefined,
   });
 
   const [statsHeader, setStatsHeader] = useState<EarningsCardProps>({
@@ -29,9 +31,7 @@ export const Dashboard: React.FC = () => {
     year: 0,
   });
 
-  const [dayEarnings, setDayEarnings] = useState<DayEarnings>({});
-
-  const getCalls = async (withTable=true) => {
+  const getCalls = async (withTable = true) => {
     try {
       const [allTimeCalls, yearCalls, monthCalls, todayCalls] =
         await Promise.all([
@@ -50,9 +50,7 @@ export const Dashboard: React.FC = () => {
       };
 
       setStatsHeader(updatedStats);
-
-      const dayEarnings = callService.calculateDayEarnings(allTimeCalls);
-      setDayEarnings(dayEarnings);
+      setCalendarCalls(allTimeCalls);
     } catch (error) {
       console.error("Error loading call data:", error);
     }
@@ -73,9 +71,13 @@ export const Dashboard: React.FC = () => {
     setThemeFromSettings("dashboard");
   }, []);
 
+  useEffect(() => {
+    filterCalls(filter);
+  }, [filter]);
+
   return (
     <div className="p-10 transition-colors duration-200 ease-in-out">
-      <CallContext.Provider value={{ reloadTable, filterCalls }}>
+      <CallContext.Provider value={{ reloadTable, filterCalls, filter, setFilter }}>
 
         <HeaderSection />
 
@@ -86,7 +88,7 @@ export const Dashboard: React.FC = () => {
         <section className="flex gap-6 flex-wrap min-[1150px]:flex-nowrap justify-center min-[1150px]:justify-between">
           <CallsSection calls={filteredCalls} />
 
-          <CalendarSection dayEarnings={dayEarnings} />
+          <CalendarSection filteredCalls={calendarCalls} />
         </section>
 
       </CallContext.Provider>

@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
 import dateService from "@/services/dateService";
+import settingsService from "@/services/settingsService";
 
 import { type Call } from "@/types/Call";
 
@@ -8,8 +9,19 @@ import { ActionsDropDown } from "./ActionsDropDown";
 
 import { DataTableColumnHeader } from "@/components/ui/DataTableColumnHeader";
 
+const colorMap = await settingsService.getCompanyColorMap();
+
 
 export const columns: ColumnDef<Call>[] = [
+  {
+    accessorKey: "company",
+    header: ({column}) => ( <DataTableColumnHeader column={column} title="Company" className="pl-4"/> ),
+    cell: ({ row }) => { 
+      const company = row.getValue("company") as string;
+      const color = colorMap[company];
+      return <div className="pl-4 font-bold" style={{ color }}>{company}</div>;
+    },
+  }, 
   {
     accessorKey: "date",
     header: ({column}) => ( <DataTableColumnHeader column={column} title="Date" className="pl-4"/> ),

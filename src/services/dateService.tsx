@@ -1,6 +1,19 @@
+const calculateDuration = (startTime: Date, endTime: Date, rounding: boolean) => {
+    const seconds = Math.floor(
+      (endTime.getTime() - startTime.getTime()) / 1000); 
+
+    let minutes = Math.floor(seconds / 60);
+    if (rounding) {
+        if (seconds % 60 >= 30) minutes += 1;
+    }
+
+    return {seconds, minutes}
+}
+
+
 const formatDuration = (seconds: number, full = false) => {
     if (seconds === 0 || seconds === null) {
-        return ``;
+        return `-`;
     } else if (seconds < 60) {
         return `${seconds}s`;
     } else if (seconds < 3600) {
@@ -125,6 +138,7 @@ const getDateBoundaries = (startDateStr: string, endDateStr: string) => {
 
 
 export default {
+    calculateDuration,
     formatDuration,
     formatDate,
     formatTime,
