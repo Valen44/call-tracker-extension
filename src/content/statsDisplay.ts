@@ -110,9 +110,11 @@ export class StatsDisplay {
   // =========================
   setStatus(status: AgentState) {
     const headerEl = document.getElementById("tracker-header");
-    if (!headerEl) return;
+    const titleEl = document.getElementById("tracker-title");
+    if (!headerEl || !titleEl) return;
 
     headerEl.style.backgroundColor = status.color;
+    titleEl.textContent = "Call Tracker - " + status.name.toUpperCase();
 
     this.updateStats();
   }
