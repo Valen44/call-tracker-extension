@@ -40,7 +40,7 @@ export const ProgressCard = ({ todayTotalEarnings }: { todayTotalEarnings: numbe
             color={progressColor}
           />
           <p className="text-base whitespace-nowrap">
-            ${todayTotalEarnings} / ${goal} | {progressValue.toFixed(0)}%
+            ${todayTotalEarnings.toFixed(2)} / ${goal} | {progressValue.toFixed(0)}%
           </p>
         </div>
 
