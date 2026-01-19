@@ -89,7 +89,7 @@ const calculateStats = (calls: Call[]) : CallStats => {
     const totalEarnings = calls.reduce((sum, call) => sum + (call.earnings || 0), 0);
     const totalDuration = calls.reduce((sum, call) => sum + (call.duration || 0), 0);
     const totalAvail = calls.reduce((sum, call) => call.available ? sum + call.available : sum + 0, 0);
-    const avgHourlyRate = totalDuration / (totalDuration + totalAvail) * 0.15 * 60 || 0.0;
+    const avgHourlyRate = totalEarnings / ((totalDuration + totalAvail) / 3600) || 0.0;
     const avgCallTime = Math.round(totalDuration / totalCalls) || 0;
     const avgAvailableTime = Math.round(totalAvail / totalCalls) || 0;
 
