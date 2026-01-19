@@ -1,20 +1,20 @@
 {
   "manifest_version": 3,
-  "version": "1.0.0",
-  "name": "CALL TRACKER",
+  "version": "2.0.0",
+  "name": "Call Tracker for Interpreters",
 
   "action": {
-    "default_popup": "./src/popup/popup.html",
+    "default_popup": "src/popup/popup.html",
     "default_icon": {
-      "16": "./icons/dark-icon16.png",
-      "32": "./icons/dark-icon32.png",
-      "48": "./icons/dark-icon24.png",
-      "128": "./icons/dark-icon128.png"
+      "16": "icons/dark-icon16.png",
+      "32": "icons/dark-icon32.png",
+      "48": "icons/dark-icon24.png",
+      "128": "icons/dark-icon128.png"
     }
   },
 
   "background": {
-    "service_worker": "./assets/background.js",
+    "service_worker": "assets/background.js",
     "type": "module"
   },
 
@@ -33,9 +33,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "./dashboard/dashboard.html",
-        "./dashboard/dashboard.js",
-        "./dashboard/dashboard.css",
+        "dashboard/dashboard.html",
+        "dashboard/dashboard.js",
+        "dashboard/dashboard.css",
         "config/portals.json"
       ],
       "matches": ["<all_urls>"]
@@ -43,9 +43,9 @@
   ],
 
   "icons": {
-    "16": "./icons/dark-icon16.png",
-    "32": "./icons/dark-icon32.png",
-    "48": "./icons/dark-icon24.png",
-    "128": "./icons/dark-icon128.png"
+    "16": "icons/dark-icon16.png",
+    "32": "icons/dark-icon32.png",
+    "48": "icons/dark-icon48.png",
+    "128": "icons/dark-icon128.png"
   }
 }
