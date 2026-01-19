@@ -1,6 +1,5 @@
 [
     {
-        "enabled": true,
         "companyName": "LSA",
         "payRate": 0.15,
         "color": "#DD921E",
@@ -30,14 +29,13 @@
         }
     },
     {
-        "enabled": true,
         "companyName": "Propio",
         "payRate": 0.11,
         "color": "#5957FF",
         "portalConfig": {
             "portalLink": "https://interpreters.propio-ls.com/portal",
             "selector": ".call-status-text",
-            "rounding": false,
+            "rounding": true,
             "validCallDuration": 60,
             "websiteTitleTimer": true,
             "keywords": {
