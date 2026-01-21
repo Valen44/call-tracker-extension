@@ -10,9 +10,10 @@ export class RingingState extends BaseState {
   color = "rgb(10, 6, 88)";
   private availableStartTime: Date;
 
-  constructor(manager: StateManager, availableStartTime: Date) {
+  constructor(manager: StateManager, availableStartTime?: Date) {
     super(manager);
-    this.availableStartTime = availableStartTime;
+    
+    this.availableStartTime = availableStartTime ?? new Date();
   }
 
   enter() {

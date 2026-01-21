@@ -1,6 +1,7 @@
 import { AvailableState } from "./AvailableState.ts";
 import { BaseState } from "./BaseState.ts";
 import { InvalidState } from "./InvalidState.ts";
+import { RingingState } from "./RingingState.ts";
 
 export class UnavailableState extends BaseState {
   name = "UNAVAILABLE";
@@ -26,6 +27,10 @@ export class UnavailableState extends BaseState {
   onDOMUpdate(text: string) {
     if (this.manager.config.keywords.available.some((k: string) => text === k.toLocaleLowerCase())) {
       const nextState = new AvailableState(this.manager);
+      this.manager.setState(nextState);
+    }
+    else if (this.manager.config.keywords.ringing.some((k: string) => text === k.toLocaleLowerCase())) {
+      const nextState = new RingingState(this.manager);
       this.manager.setState(nextState);
     }
     else if (this.manager.config.keywords.unavailable.some((k: string) => text === k.toLocaleLowerCase())) {
