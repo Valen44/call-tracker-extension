@@ -25,6 +25,7 @@ export class StateManager {
   private observer?: MutationObserver;
   private widget: StatsDisplay;
 
+  private timerStartTime: number = 0;
   private timer = 0;
   private interval?: number;
 
@@ -73,11 +74,15 @@ export class StateManager {
 
   // ---------- TIMER ----------
   startTimer() {
+    this.timerStartTime = Date.now();
     this.timer = 0;
     this.interval && clearInterval(this.interval);
 
     this.interval = window.setInterval(() => {
-      this.timer++;
+      const now = Date.now();
+      const diffInSeconds = Math.floor((now - this.timerStartTime) / 1000);
+      
+      this.timer = diffInSeconds; // Asignamos el tiempo real transcurrido
       this.updateWidget();
     }, 1000);
   }
@@ -86,6 +91,7 @@ export class StateManager {
     this.interval && clearInterval(this.interval);
     this.interval = undefined;
     this.timer = 0;
+    this.timerStartTime = 0;
     this.updateWidget();
   }
 
