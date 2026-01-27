@@ -24,7 +24,6 @@ export class AvailableState extends BaseState {
   }
 
   exit() {
-    this.manager.stopTimer();
   }
 
   onDOMUpdate(text: string) {

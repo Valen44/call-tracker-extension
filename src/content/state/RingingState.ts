@@ -26,7 +26,6 @@ export class RingingState extends BaseState {
       text: "R",
     });
 
-    this.manager.startTimer();
   }
 
   exit() {
