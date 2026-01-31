@@ -38,6 +38,8 @@ async function loadPortalsConfig(): Promise<Company[]> {
   const stored = await chrome.storage.local.get("portalsConfig");
   if (stored.portalsConfig) return stored.portalsConfig;
 
+  console.log("Loading portals config from file");
+
   const res = await fetch(chrome.runtime.getURL("config/portals.json"));
   const json = await res.json();
 
