@@ -2,6 +2,7 @@ import type { AgentState } from "./AgentState.ts";
 import { AvailableState } from "./AvailableState.ts";
 import { BaseState } from "./BaseState.ts";
 import { InvalidState } from "./InvalidState.ts";
+import { RingingState } from "./RingingState.ts";
 import { UnavailableState } from "./UnavailableState.ts";
 
 export class ACWState extends BaseState {
@@ -31,6 +32,10 @@ export class ACWState extends BaseState {
     }
     else if (this.manager.config.keywords.unavailable.some((k: string) => text === k.toLocaleLowerCase())) {
       nextState = new UnavailableState(this.manager);
+    }
+    else if (this.manager.config.keywords.ringing.some((k: string) => text === k.toLocaleLowerCase())) {
+      const nextState = new RingingState(this.manager);
+      this.manager.setState(nextState);
     }
     else if (this.manager.config.keywords.acw.some((k: string) => text === k.toLocaleLowerCase())) {
       return;

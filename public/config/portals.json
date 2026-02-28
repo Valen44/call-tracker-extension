@@ -1,7 +1,7 @@
 [
     {
         "companyName": "LSA",
-        "payRate": 0.15,
+        "payRate": 0.01,
         "color": "#DD921E",
         "portalConfig": {
             "portalLink": "https://agent.lsaweb.com/agent",
@@ -30,7 +30,7 @@
     },
     {
         "companyName": "Propio",
-        "payRate": 0.11,
+        "payRate": 0.01,
         "color": "#5957FF",
         "portalConfig": {
             "portalLink": "https://interpreters.propio-ls.com/portal",

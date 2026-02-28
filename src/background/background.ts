@@ -29,7 +29,7 @@ async function initializePortals() {
   const result = await chrome.storage.local.get("portalsConfig");
 
   // If already initialized, do nothing
-  if (Array.isArray(result.portals) && result.portals.length > 0) {
+  if (result) {
     return;
   }
 
