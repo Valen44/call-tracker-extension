@@ -37,6 +37,7 @@ const getCall = async (callID: string): Promise<Call | null> => {
 }
 
 const getAllCalls = async (): Promise<Call[]> => {
+    console.log("Fetching all calls...")
     try {
         const result = await chrome.storage.local.get(['calls']);
         const allCalls = result.calls || {};
@@ -59,6 +60,7 @@ export type filterCallsProps = {
 
 const filterCalls = async (filter : filterCallsProps): Promise<Call[]> => {
     const allCalls = await getAllCalls();
+    console.log("Filtering calls...")
     const {period, startDateStr, endDateStr, companyName} = filter;
     let startDate: Date;
     let endDate: Date;

@@ -5,7 +5,17 @@ import type { AgentState } from "./state/AgentState";
 
 export class StatsDisplay {
   private companyName: string;
-  private tracker: HTMLElement | null = null;
+  public tracker: HTMLElement | null = null;
+  private trackerElements: { [key: string]: HTMLElement | null } = {
+    "total-calls": null,
+    "today-earnings": null,
+    "in-call-time": null,
+    "hourly-rate": null,
+    "avg-avail": null,
+    "tracker-header": null,
+    "tracker-title": null,
+    "tracker-timer": null,
+  };
 
   private isDragging = false;
   private offsetX = 0;
@@ -26,6 +36,14 @@ export class StatsDisplay {
     document.body.insertAdjacentHTML("beforeend", statsContainer.HTML);
 
     this.tracker = document.getElementById("tracker");
+    this.trackerElements["total-calls"] = document.getElementById("total-calls");
+    this.trackerElements["today-earnings"] = document.getElementById("today-earnings");
+    this.trackerElements["in-call-time"] = document.getElementById("in-call-time");
+    this.trackerElements["hourly-rate"] = document.getElementById("hourly-rate");
+    this.trackerElements["avg-avail"] = document.getElementById("avg-avail");
+    this.trackerElements["tracker-header"] = document.getElementById("tracker-header");
+    this.trackerElements["tracker-title"] = document.getElementById("tracker-title");
+    this.trackerElements["tracker-timer"] = document.getElementById("tracker-timer");
 
     this.attachDragHandlers();
     this.updateStats();
@@ -90,7 +108,7 @@ export class StatsDisplay {
   }
 
   private setText(id: string, value: string) {
-    const el = document.getElementById(id);
+    const el = this.trackerElements[id];
     if (el) el.textContent = value;
   }
 
@@ -98,7 +116,7 @@ export class StatsDisplay {
   // TIMER
   // =========================
   updateTimer(seconds: number) {
-    const timerElement = document.getElementById("tracker-timer");
+    const timerElement = this.trackerElements["tracker-timer"];
     if (!timerElement) return;
 
     timerElement.textContent =
@@ -109,8 +127,8 @@ export class StatsDisplay {
   // STATUS
   // =========================
   setStatus(status: AgentState) {
-    const headerEl = document.getElementById("tracker-header");
-    const titleEl = document.getElementById("tracker-title");
+    const headerEl = this.trackerElements["tracker-header"];
+    const titleEl = this.trackerElements["tracker-title"];
     if (!headerEl || !titleEl) return;
 
     headerEl.style.backgroundColor = status.color;
