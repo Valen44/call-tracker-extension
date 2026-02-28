@@ -30,6 +30,8 @@ export class StateManager {
 
   public config: Config;
 
+
+
   constructor(config: Config, widget: StatsDisplay) {
     this.config = config;
     this.widget = widget;
@@ -48,6 +50,7 @@ export class StateManager {
     this.currentState = state;
     this.currentState.enter();
     this.updateWidget();
+    this.widget.setStatus(this.currentState);
   }
 
   // ---------- DOM ----------
@@ -90,11 +93,9 @@ export class StateManager {
   }
 
   // ---------- WIDGET ----------
-  updateWidget() {
-    const el = document.querySelector(".tracker");
-    if (!el) return;
 
-    this.widget.setStatus(this.currentState);
+  updateWidget() {
+    if (!this.widget.tracker) return;
 
     this.widget.updateTimer(this.timer);
 
@@ -104,6 +105,8 @@ export class StateManager {
       document.title = `(${m}:${s}) ${this.config.companyName}`;
     }
   }
+
+
 
   updateWidgetStats() {
     this.widget.updateStats()
